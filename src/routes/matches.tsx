@@ -161,7 +161,13 @@ function FilterPanel({ filters, onChange, onClose }: { filters: Filters; onChang
           </button>
         </div>
         <FilterGroup title="Campus" items={CAMPUSES} selected={local.campus} onToggle={(v) => toggle("campus", v)} />
-        <FilterGroup title="Program" items={PROGRAMS} selected={local.program} onToggle={(v) => toggle("program", v)} />
+        <FilterGroup title="Level / Type" items={PROGRAM_LEVELS} selected={local.level} onToggle={(v) => toggle("level", v)} />
+        {availablePrograms.length > 0 && (
+          <FilterGroup title="Program" items={availablePrograms} selected={local.program} onToggle={(v) => toggle("program", v)} />
+        )}
+        {availablePrograms.length === 0 && (
+          <p className="text-xs text-muted-foreground -mt-3">Select a Level / Type above to narrow down programs.</p>
+        )}
         <FilterGroup title="Languages" items={LANGUAGES} selected={local.language} onToggle={(v) => toggle("language", v)} />
         <FilterGroup title="Interests" items={INTERESTS} selected={local.interest} onToggle={(v) => toggle("interest", v)} />
         <FilterGroup title="Availability" items={AVAILABILITY} selected={local.availability} onToggle={(v) => toggle("availability", v)} />
