@@ -6,7 +6,7 @@ import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Chip, Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAMS, SUPPORT_NEEDS, AVAILABILITY, scoreMatch } from "@/lib/data";
+import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, type ProgramLevel } from "@/lib/data";
 import { getUser } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -15,8 +15,8 @@ export const Route = createFileRoute("/matches")({
   head: () => ({ meta: [{ title: "Matches | First Friend" }] }),
 });
 
-type Filters = { campus: string[]; program: string[]; language: string[]; interest: string[]; availability: string[]; support: string[] };
-const emptyFilters: Filters = { campus: [], program: [], language: [], interest: [], availability: [], support: [] };
+type Filters = { campus: string[]; level: ProgramLevel[]; program: string[]; language: string[]; interest: string[]; availability: string[]; support: string[] };
+const emptyFilters: Filters = { campus: [], level: [], program: [], language: [], interest: [], availability: [], support: [] };
 
 function Matches() {
   const ready = useRequireAuth();
@@ -28,6 +28,7 @@ function Matches() {
     if (!u) return [];
     return BUDDIES.filter((b) => {
       if (filters.campus.length && !filters.campus.includes(b.campus)) return false;
+      if (filters.level.length && !filters.level.some((lv) => PROGRAMS_BY_LEVEL[lv].includes(b.program))) return false;
       if (filters.program.length && !filters.program.includes(b.program)) return false;
       if (filters.language.length && !filters.language.some((l) => b.languages.includes(l))) return false;
       if (filters.interest.length && !filters.interest.some((l) => b.interests.includes(l))) return false;
@@ -126,7 +127,25 @@ function Matches() {
 function FilterPanel({ filters, onChange, onClose }: { filters: Filters; onChange: (f: Filters) => void; onClose: () => void }) {
   const [local, setLocal] = useState(filters);
   const toggle = (k: keyof Filters, v: string) =>
-    setLocal((p) => ({ ...p, [k]: p[k].includes(v) ? p[k].filter((x) => x !== v) : [...p[k], v] }));
+    setLocal((p) => {
+      const arr = p[k] as string[];
+      const next = arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+      const updated = { ...p, [k]: next } as Filters;
+      // If level changed, drop any selected programs no longer in those levels
+      if (k === "level" && updated.program.length) {
+        const allowed = new Set(
+          updated.level.length
+            ? updated.level.flatMap((lv) => PROGRAMS_BY_LEVEL[lv])
+            : Object.values(PROGRAMS_BY_LEVEL).flat()
+        );
+        updated.program = updated.program.filter((pr) => allowed.has(pr));
+      }
+      return updated;
+    });
+
+  const availablePrograms = local.level.length
+    ? local.level.flatMap((lv) => PROGRAMS_BY_LEVEL[lv])
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex" onClick={onClose}>
@@ -142,7 +161,13 @@ function FilterPanel({ filters, onChange, onClose }: { filters: Filters; onChang
           </button>
         </div>
         <FilterGroup title="Campus" items={CAMPUSES} selected={local.campus} onToggle={(v) => toggle("campus", v)} />
-        <FilterGroup title="Program" items={PROGRAMS} selected={local.program} onToggle={(v) => toggle("program", v)} />
+        <FilterGroup title="Level / Type" items={PROGRAM_LEVELS} selected={local.level} onToggle={(v) => toggle("level", v)} />
+        {availablePrograms.length > 0 && (
+          <FilterGroup title="Program" items={availablePrograms} selected={local.program} onToggle={(v) => toggle("program", v)} />
+        )}
+        {availablePrograms.length === 0 && (
+          <p className="text-xs text-muted-foreground -mt-3">Select a Level / Type above to narrow down programs.</p>
+        )}
         <FilterGroup title="Languages" items={LANGUAGES} selected={local.language} onToggle={(v) => toggle("language", v)} />
         <FilterGroup title="Interests" items={INTERESTS} selected={local.interest} onToggle={(v) => toggle("interest", v)} />
         <FilterGroup title="Availability" items={AVAILABILITY} selected={local.availability} onToggle={(v) => toggle("availability", v)} />
