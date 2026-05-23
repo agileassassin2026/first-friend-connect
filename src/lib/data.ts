@@ -63,7 +63,7 @@ export const PROGRAMS_BY_LEVEL: Record<ProgramLevel, string[]> = {
   ],
 };
 
-export const PROGRAMS = PROGRAM_LEVELS.flatMap((l) => PROGRAMS_BY_LEVEL[l]);
+export const PROGRAMS = [...new Set(PROGRAM_LEVELS.flatMap((l) => [...PROGRAMS_BY_LEVEL[l], "Other"]))];
 export const LANGUAGES = ["English", "French", "Spanish", "Mandarin", "German", "Portuguese", "Italian", "Vietnamese"];
 
 export const SUPPORT_NEEDS = [
