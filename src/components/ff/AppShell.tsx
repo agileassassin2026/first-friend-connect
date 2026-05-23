@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getUser, logout, type User } from "@/lib/auth";
 import { Icon } from "./Icon";
 import { Avatar } from "./Avatar";
+import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -31,9 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar (desktop) */}
       <aside className="hidden md:flex flex-col w-64 bg-navy text-white p-6 sticky top-0 h-screen">
         <Link to="/matches" className="flex items-center gap-2 mb-10">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Icon name="diversity_3" className="text-navy" />
-          </div>
+          <Logo size={36} />
           <span className="font-bold text-lg tracking-tight">First Friend</span>
         </Link>
 

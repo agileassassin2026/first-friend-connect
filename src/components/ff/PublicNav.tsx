@@ -1,14 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Icon } from "./Icon";
+import { Logo } from "./Logo";
 
 export function PublicNav() {
   return (
     <nav className="bg-navy text-white sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-10 py-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Icon name="diversity_3" className="text-navy" />
-          </div>
+          <Logo size={36} />
           <span className="font-bold text-lg tracking-tight">First Friend</span>
         </Link>
         <div className="hidden md:flex gap-7 text-sm">

@@ -4,6 +4,7 @@ import { FFButton } from "@/components/ff/FFButton";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFInput } from "@/components/ff/FFInput";
 import { Icon } from "@/components/ff/Icon";
+import { Logo } from "@/components/ff/Logo";
 import { getUser, setUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
@@ -46,9 +47,7 @@ function Login() {
     <div className="min-h-screen grid md:grid-cols-2 bg-background">
       <div className="hero-gradient hidden md:flex flex-col justify-between p-12 text-white">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Icon name="diversity_3" className="text-navy" />
-          </div>
+          <Logo size={36} />
           <span className="font-bold">First Friend</span>
         </Link>
         <div className="space-y-4">
