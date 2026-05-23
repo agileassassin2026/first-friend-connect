@@ -15,7 +15,6 @@ export const Route = createFileRoute("/settings")({
 function Settings() {
   const ready = useRequireAuth();
   const navigate = useNavigate();
-  const [lang, setLang] = useState<"EN" | "FR">("EN");
   const [notif, setNotif] = useState({ matches: true, messages: true, streak: true, weekly: false });
   const [paused, setPaused] = useState(false);
   if (!ready) return null;
