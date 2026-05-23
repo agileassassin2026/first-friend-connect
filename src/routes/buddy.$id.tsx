@@ -47,15 +47,15 @@ function BuddyDetail() {
         </Link>
 
         <FFCard className="p-0 overflow-hidden">
-          <div className="hero-gradient h-32 relative">
-            <div className="absolute top-4 right-4 bg-white rounded-xl px-4 py-2 shadow-card">
-              <div className="text-2xl font-extrabold text-primary leading-none">{score}%</div>
-              <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Match</p>
+          <div className="px-6 md:px-8 pt-6 pb-8">
+            <div className="flex justify-end mb-4">
+              <div className="bg-primary-soft rounded-xl px-4 py-2">
+                <div className="text-2xl font-extrabold text-primary leading-none">{score}%</div>
+                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Match</p>
+              </div>
             </div>
-          </div>
-          <div className="px-6 md:px-8 pb-8 -mt-12">
-            <div className="flex flex-col md:flex-row md:items-end gap-4">
-              <Avatar name={buddy.name} src={buddy.avatar} size={96} className="ring-4 ring-white" />
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <Avatar name={buddy.name} src={buddy.avatar} size={96} />
               <div className="flex-1">
                 <h1 className="text-2xl font-extrabold">{buddy.name}</h1>
                 <p className="text-sm text-muted-foreground">{buddy.program} · {buddy.campus}</p>
