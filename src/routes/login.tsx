@@ -33,7 +33,7 @@ function Login() {
         email,
         role: "new-student",
         campus: "Lille",
-        program: "Grande École (MIM)",
+        program: "Master Cycle (Grande École)",
         languages: ["English", "French"],
       });
       navigate({ to: "/onboarding/new-student" });
