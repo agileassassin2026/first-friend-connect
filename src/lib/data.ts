@@ -14,14 +14,33 @@ export type Buddy = {
   bio: string;
 };
 
-export const CAMPUSES = ["Lille", "Paris", "Online"];
+export const CAMPUSES = ["Lille", "Paris"];
 export const PROGRAMS = [
-  "Grande École (MIM)",
+  "Bachelor Cycle (Grande École)",
+  "Master Cycle (Grande École)",
   "Bachelor in International Business",
-  "MSc International Business",
-  "MSc Finance",
-  "MSc Marketing",
-  "MSc Big Data Analytics",
+  "Bachelor in Management and Tech Design",
+  "Master in Fashion Management",
+  "Master in International Business — MIB",
+  "Master in Strategy & Digital Transformation",
+  "Master in Finance",
+  "Master in International Accounting, Audit & Control",
+  "Master in Digital Marketing & Customer Experience Management",
+  "Master in AI & Data Analytics for Business",
+  "Master in Business Analysis & Consulting",
+  "Master in Cybersecurity Management",
+  "Master in Management for Sustainability",
+  "Global MBA",
+  "Executive Program in Financial Management",
+  "Executive Program in Marketing and Digitalization",
+  "Executive Program in Commercial Management and Business Development",
+  "Executive Program in Human Development and Transformation Management",
+  "Joint IÉSEG / KU Leuven Doctoral Program in Business Economics",
+  "PhD Program with the University of Lille",
+  "Digital Marketing Summer Program",
+  "Fashion Business Summer Program",
+  "Artificial Intelligence & Sustainability Summer Program",
+  "International Summer Academy",
 ];
 export const LANGUAGES = ["English", "French", "Spanish", "Mandarin", "German", "Portuguese", "Italian", "Vietnamese"];
 
