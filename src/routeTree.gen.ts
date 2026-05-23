@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SignupSeniorBuddyRouteImport } from './routes/signup.senior-buddy'
+import { Route as SignupNewStudentRouteImport } from './routes/signup.new-student'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -22,31 +24,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupSeniorBuddyRoute = SignupSeniorBuddyRouteImport.update({
+  id: '/signup/senior-buddy',
+  path: '/signup/senior-buddy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupNewStudentRoute = SignupNewStudentRouteImport.update({
+  id: '/signup/new-student',
+  path: '/signup/new-student',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup/new-student': typeof SignupNewStudentRoute
+  '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup/new-student': typeof SignupNewStudentRoute
+  '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup/new-student': typeof SignupNewStudentRoute
+  '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/login' | '/signup/new-student' | '/signup/senior-buddy'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login'
+  to: '/' | '/login' | '/signup/new-student' | '/signup/senior-buddy'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/signup/new-student'
+    | '/signup/senior-buddy'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  SignupNewStudentRoute: typeof SignupNewStudentRoute
+  SignupSeniorBuddyRoute: typeof SignupSeniorBuddyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +90,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup/senior-buddy': {
+      id: '/signup/senior-buddy'
+      path: '/signup/senior-buddy'
+      fullPath: '/signup/senior-buddy'
+      preLoaderRoute: typeof SignupSeniorBuddyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup/new-student': {
+      id: '/signup/new-student'
+      path: '/signup/new-student'
+      fullPath: '/signup/new-student'
+      preLoaderRoute: typeof SignupNewStudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  SignupNewStudentRoute: SignupNewStudentRoute,
+  SignupSeniorBuddyRoute: SignupSeniorBuddyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
