@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getUser, logout, type User } from "@/lib/auth";
 import { Icon } from "./Icon";
 import { Avatar } from "./Avatar";
+import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 const items = [
