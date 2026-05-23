@@ -127,7 +127,25 @@ function Matches() {
 function FilterPanel({ filters, onChange, onClose }: { filters: Filters; onChange: (f: Filters) => void; onClose: () => void }) {
   const [local, setLocal] = useState(filters);
   const toggle = (k: keyof Filters, v: string) =>
-    setLocal((p) => ({ ...p, [k]: p[k].includes(v) ? p[k].filter((x) => x !== v) : [...p[k], v] }));
+    setLocal((p) => {
+      const arr = p[k] as string[];
+      const next = arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+      const updated = { ...p, [k]: next } as Filters;
+      // If level changed, drop any selected programs no longer in those levels
+      if (k === "level" && updated.program.length) {
+        const allowed = new Set(
+          updated.level.length
+            ? updated.level.flatMap((lv) => PROGRAMS_BY_LEVEL[lv])
+            : Object.values(PROGRAMS_BY_LEVEL).flat()
+        );
+        updated.program = updated.program.filter((pr) => allowed.has(pr));
+      }
+      return updated;
+    });
+
+  const availablePrograms = local.level.length
+    ? local.level.flatMap((lv) => PROGRAMS_BY_LEVEL[lv])
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex" onClick={onClose}>
