@@ -4,6 +4,7 @@ import { FFButton } from "@/components/ff/FFButton";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFInput } from "@/components/ff/FFInput";
 import { Icon } from "@/components/ff/Icon";
+import { Logo } from "@/components/ff/Logo";
 import { getUser, setUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
