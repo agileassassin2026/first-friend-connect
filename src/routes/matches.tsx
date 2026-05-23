@@ -28,6 +28,7 @@ function Matches() {
     if (!u) return [];
     return BUDDIES.filter((b) => {
       if (filters.campus.length && !filters.campus.includes(b.campus)) return false;
+      if (filters.level.length && !filters.level.some((lv) => PROGRAMS_BY_LEVEL[lv].includes(b.program))) return false;
       if (filters.program.length && !filters.program.includes(b.program)) return false;
       if (filters.language.length && !filters.language.some((l) => b.languages.includes(l))) return false;
       if (filters.interest.length && !filters.interest.some((l) => b.interests.includes(l))) return false;
