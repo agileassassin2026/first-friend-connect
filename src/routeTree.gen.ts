@@ -9,13 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignupSeniorBuddyRouteImport } from './routes/signup.senior-buddy'
 import { Route as SignupNewStudentRouteImport } from './routes/signup.new-student'
 import { Route as OnboardingSeniorBuddyRouteImport } from './routes/onboarding.senior-buddy'
 import { Route as OnboardingNewStudentRouteImport } from './routes/onboarding.new-student'
+import { Route as BuddyIdRouteImport } from './routes/buddy.$id'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesRoute = MatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -46,10 +59,18 @@ const OnboardingNewStudentRoute = OnboardingNewStudentRouteImport.update({
   path: '/onboarding/new-student',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuddyIdRoute = BuddyIdRouteImport.update({
+  id: '/buddy/$id',
+  path: '/buddy/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
+  '/profile': typeof ProfileRoute
+  '/buddy/$id': typeof BuddyIdRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -58,6 +79,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
+  '/profile': typeof ProfileRoute
+  '/buddy/$id': typeof BuddyIdRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -67,6 +91,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
+  '/profile': typeof ProfileRoute
+  '/buddy/$id': typeof BuddyIdRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -77,6 +104,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/matches'
+    | '/profile'
+    | '/buddy/$id'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -85,6 +115,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/matches'
+    | '/profile'
+    | '/buddy/$id'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -93,6 +126,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/login'
+    | '/matches'
+    | '/profile'
+    | '/buddy/$id'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -102,6 +138,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  MatchesRoute: typeof MatchesRoute
+  ProfileRoute: typeof ProfileRoute
+  BuddyIdRoute: typeof BuddyIdRoute
   OnboardingNewStudentRoute: typeof OnboardingNewStudentRoute
   OnboardingSeniorBuddyRoute: typeof OnboardingSeniorBuddyRoute
   SignupNewStudentRoute: typeof SignupNewStudentRoute
@@ -110,6 +149,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches': {
+      id: '/matches'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -152,12 +205,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingNewStudentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buddy/$id': {
+      id: '/buddy/$id'
+      path: '/buddy/$id'
+      fullPath: '/buddy/$id'
+      preLoaderRoute: typeof BuddyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  MatchesRoute: MatchesRoute,
+  ProfileRoute: ProfileRoute,
+  BuddyIdRoute: BuddyIdRoute,
   OnboardingNewStudentRoute: OnboardingNewStudentRoute,
   OnboardingSeniorBuddyRoute: OnboardingSeniorBuddyRoute,
   SignupNewStudentRoute: SignupNewStudentRoute,
