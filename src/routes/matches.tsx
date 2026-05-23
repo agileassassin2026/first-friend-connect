@@ -6,7 +6,7 @@ import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Chip, Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAMS, SUPPORT_NEEDS, AVAILABILITY, scoreMatch } from "@/lib/data";
+import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, type ProgramLevel } from "@/lib/data";
 import { getUser } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -15,8 +15,8 @@ export const Route = createFileRoute("/matches")({
   head: () => ({ meta: [{ title: "Matches | First Friend" }] }),
 });
 
-type Filters = { campus: string[]; program: string[]; language: string[]; interest: string[]; availability: string[]; support: string[] };
-const emptyFilters: Filters = { campus: [], program: [], language: [], interest: [], availability: [], support: [] };
+type Filters = { campus: string[]; level: ProgramLevel[]; program: string[]; language: string[]; interest: string[]; availability: string[]; support: string[] };
+const emptyFilters: Filters = { campus: [], level: [], program: [], language: [], interest: [], availability: [], support: [] };
 
 function Matches() {
   const ready = useRequireAuth();
