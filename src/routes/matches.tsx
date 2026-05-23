@@ -103,7 +103,7 @@ function Matches() {
                   <Link to="/buddy/$id" params={{ id: buddy.id }} className="flex-1">
                     <FFButton variant="outline" full size="sm">View profile</FFButton>
                   </Link>
-                  <Link to="/buddy/$id" params={{ id: buddy.id }} search={{ request: 1 } as never} className="flex-1">
+                  <Link to="/buddy/$id" params={{ id: buddy.id }} className="flex-1">
                     <FFButton full size="sm">Request match</FFButton>
                   </Link>
                 </div>
