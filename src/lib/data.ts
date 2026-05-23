@@ -64,7 +64,7 @@ export const PROGRAMS_BY_LEVEL: Record<ProgramLevel, string[]> = {
 };
 
 export const PROGRAMS = [...new Set(PROGRAM_LEVELS.flatMap((l) => [...PROGRAMS_BY_LEVEL[l], "Other"]))];
-export const LANGUAGES = ["English", "French", "Spanish", "Mandarin", "German", "Portuguese", "Italian", "Vietnamese"];
+export const LANGUAGES = ["English", "French", "Spanish", "Mandarin", "German", "Portuguese", "Italian", "Vietnamese", "Other"];
 
 export const SUPPORT_NEEDS = [
   "Housing",
@@ -109,8 +109,9 @@ export const INTERESTS = [
   "Entrepreneurship",
   "Art",
   "Fashion",
+  "Other",
 ];
-export const AVAILABILITY = ["Weekday mornings", "Weekday evenings", "Weekends", "Flexible"];
+export const AVAILABILITY = ["Weekday mornings", "Weekday evenings", "Weekends", "Flexible", "Other"];
 
 export const BUDDIES: Buddy[] = [
   {
