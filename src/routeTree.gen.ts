@@ -13,6 +13,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignupSeniorBuddyRouteImport } from './routes/signup.senior-buddy'
 import { Route as SignupNewStudentRouteImport } from './routes/signup.new-student'
+import { Route as OnboardingSeniorBuddyRouteImport } from './routes/onboarding.senior-buddy'
+import { Route as OnboardingNewStudentRouteImport } from './routes/onboarding.new-student'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -34,16 +36,30 @@ const SignupNewStudentRoute = SignupNewStudentRouteImport.update({
   path: '/signup/new-student',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingSeniorBuddyRoute = OnboardingSeniorBuddyRouteImport.update({
+  id: '/onboarding/senior-buddy',
+  path: '/onboarding/senior-buddy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingNewStudentRoute = OnboardingNewStudentRouteImport.update({
+  id: '/onboarding/new-student',
+  path: '/onboarding/new-student',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/onboarding/new-student': typeof OnboardingNewStudentRoute
+  '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
   '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/onboarding/new-student': typeof OnboardingNewStudentRoute
+  '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
   '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
@@ -51,18 +67,34 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/onboarding/new-student': typeof OnboardingNewStudentRoute
+  '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
   '/signup/senior-buddy': typeof SignupSeniorBuddyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup/new-student' | '/signup/senior-buddy'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/onboarding/new-student'
+    | '/onboarding/senior-buddy'
+    | '/signup/new-student'
+    | '/signup/senior-buddy'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup/new-student' | '/signup/senior-buddy'
+  to:
+    | '/'
+    | '/login'
+    | '/onboarding/new-student'
+    | '/onboarding/senior-buddy'
+    | '/signup/new-student'
+    | '/signup/senior-buddy'
   id:
     | '__root__'
     | '/'
     | '/login'
+    | '/onboarding/new-student'
+    | '/onboarding/senior-buddy'
     | '/signup/new-student'
     | '/signup/senior-buddy'
   fileRoutesById: FileRoutesById
@@ -70,6 +102,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  OnboardingNewStudentRoute: typeof OnboardingNewStudentRoute
+  OnboardingSeniorBuddyRoute: typeof OnboardingSeniorBuddyRoute
   SignupNewStudentRoute: typeof SignupNewStudentRoute
   SignupSeniorBuddyRoute: typeof SignupSeniorBuddyRoute
 }
@@ -104,12 +138,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupNewStudentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/senior-buddy': {
+      id: '/onboarding/senior-buddy'
+      path: '/onboarding/senior-buddy'
+      fullPath: '/onboarding/senior-buddy'
+      preLoaderRoute: typeof OnboardingSeniorBuddyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/new-student': {
+      id: '/onboarding/new-student'
+      path: '/onboarding/new-student'
+      fullPath: '/onboarding/new-student'
+      preLoaderRoute: typeof OnboardingNewStudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  OnboardingNewStudentRoute: OnboardingNewStudentRoute,
+  OnboardingSeniorBuddyRoute: OnboardingSeniorBuddyRoute,
   SignupNewStudentRoute: SignupNewStudentRoute,
   SignupSeniorBuddyRoute: SignupSeniorBuddyRoute,
 }
