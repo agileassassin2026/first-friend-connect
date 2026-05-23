@@ -9,16 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as StreakRouteImport } from './routes/streak'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MatchesRouteImport } from './routes/matches'
+import { Route as MatchStatusRouteImport } from './routes/match-status'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignupSeniorBuddyRouteImport } from './routes/signup.senior-buddy'
 import { Route as SignupNewStudentRouteImport } from './routes/signup.new-student'
 import { Route as OnboardingSeniorBuddyRouteImport } from './routes/onboarding.senior-buddy'
 import { Route as OnboardingNewStudentRouteImport } from './routes/onboarding.new-student'
+import { Route as MatchesFilterRouteImport } from './routes/matches.filter'
 import { Route as BuddyIdRouteImport } from './routes/buddy.$id'
 
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StreakRoute = StreakRouteImport.update({
+  id: '/streak',
+  path: '/streak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -29,9 +50,19 @@ const MatchesRoute = MatchesRouteImport.update({
   path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MatchStatusRoute = MatchStatusRouteImport.update({
+  id: '/match-status',
+  path: '/match-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +90,11 @@ const OnboardingNewStudentRoute = OnboardingNewStudentRouteImport.update({
   path: '/onboarding/new-student',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MatchesFilterRoute = MatchesFilterRouteImport.update({
+  id: '/filter',
+  path: '/filter',
+  getParentRoute: () => MatchesRoute,
+} as any)
 const BuddyIdRoute = BuddyIdRouteImport.update({
   id: '/buddy/$id',
   path: '/buddy/$id',
@@ -67,10 +103,16 @@ const BuddyIdRoute = BuddyIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
-  '/matches': typeof MatchesRoute
+  '/match-status': typeof MatchStatusRoute
+  '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/streak': typeof StreakRoute
+  '/support': typeof SupportRoute
   '/buddy/$id': typeof BuddyIdRoute
+  '/matches/filter': typeof MatchesFilterRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -78,10 +120,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
-  '/matches': typeof MatchesRoute
+  '/match-status': typeof MatchStatusRoute
+  '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/streak': typeof StreakRoute
+  '/support': typeof SupportRoute
   '/buddy/$id': typeof BuddyIdRoute
+  '/matches/filter': typeof MatchesFilterRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -90,10 +138,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
-  '/matches': typeof MatchesRoute
+  '/match-status': typeof MatchStatusRoute
+  '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/streak': typeof StreakRoute
+  '/support': typeof SupportRoute
   '/buddy/$id': typeof BuddyIdRoute
+  '/matches/filter': typeof MatchesFilterRoute
   '/onboarding/new-student': typeof OnboardingNewStudentRoute
   '/onboarding/senior-buddy': typeof OnboardingSeniorBuddyRoute
   '/signup/new-student': typeof SignupNewStudentRoute
@@ -103,10 +157,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chat'
     | '/login'
+    | '/match-status'
     | '/matches'
     | '/profile'
+    | '/settings'
+    | '/streak'
+    | '/support'
     | '/buddy/$id'
+    | '/matches/filter'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -114,10 +174,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chat'
     | '/login'
+    | '/match-status'
     | '/matches'
     | '/profile'
+    | '/settings'
+    | '/streak'
+    | '/support'
     | '/buddy/$id'
+    | '/matches/filter'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -125,10 +191,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/chat'
     | '/login'
+    | '/match-status'
     | '/matches'
     | '/profile'
+    | '/settings'
+    | '/streak'
+    | '/support'
     | '/buddy/$id'
+    | '/matches/filter'
     | '/onboarding/new-student'
     | '/onboarding/senior-buddy'
     | '/signup/new-student'
@@ -137,9 +209,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChatRoute: typeof ChatRoute
   LoginRoute: typeof LoginRoute
-  MatchesRoute: typeof MatchesRoute
+  MatchStatusRoute: typeof MatchStatusRoute
+  MatchesRoute: typeof MatchesRouteWithChildren
   ProfileRoute: typeof ProfileRoute
+  SettingsRoute: typeof SettingsRoute
+  StreakRoute: typeof StreakRoute
+  SupportRoute: typeof SupportRoute
   BuddyIdRoute: typeof BuddyIdRoute
   OnboardingNewStudentRoute: typeof OnboardingNewStudentRoute
   OnboardingSeniorBuddyRoute: typeof OnboardingSeniorBuddyRoute
@@ -149,6 +226,27 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/streak': {
+      id: '/streak'
+      path: '/streak'
+      fullPath: '/streak'
+      preLoaderRoute: typeof StreakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -163,11 +261,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/match-status': {
+      id: '/match-status'
+      path: '/match-status'
+      fullPath: '/match-status'
+      preLoaderRoute: typeof MatchStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -205,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingNewStudentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/matches/filter': {
+      id: '/matches/filter'
+      path: '/filter'
+      fullPath: '/matches/filter'
+      preLoaderRoute: typeof MatchesFilterRouteImport
+      parentRoute: typeof MatchesRoute
+    }
     '/buddy/$id': {
       id: '/buddy/$id'
       path: '/buddy/$id'
@@ -215,11 +334,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface MatchesRouteChildren {
+  MatchesFilterRoute: typeof MatchesFilterRoute
+}
+
+const MatchesRouteChildren: MatchesRouteChildren = {
+  MatchesFilterRoute: MatchesFilterRoute,
+}
+
+const MatchesRouteWithChildren =
+  MatchesRoute._addFileChildren(MatchesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatRoute: ChatRoute,
   LoginRoute: LoginRoute,
-  MatchesRoute: MatchesRoute,
+  MatchStatusRoute: MatchStatusRoute,
+  MatchesRoute: MatchesRouteWithChildren,
   ProfileRoute: ProfileRoute,
+  SettingsRoute: SettingsRoute,
+  StreakRoute: StreakRoute,
+  SupportRoute: SupportRoute,
   BuddyIdRoute: BuddyIdRoute,
   OnboardingNewStudentRoute: OnboardingNewStudentRoute,
   OnboardingSeniorBuddyRoute: OnboardingSeniorBuddyRoute,

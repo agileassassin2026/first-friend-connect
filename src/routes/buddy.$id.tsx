@@ -10,21 +10,13 @@ import { getUser, setMatch, completeStreakAction } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/buddy/$id")({
-  component: () => {
-    const navigate = useNavigate();
-    if (typeof window !== "undefined") navigate({ to: "/matches" });
-    return null;
-  },
-});
-
-export const BuddyRoute = createFileRoute("/buddy/$id")({
   component: BuddyDetail,
   head: () => ({ meta: [{ title: "Buddy Profile | First Friend" }] }),
 });
 
 function BuddyDetail() {
   const ready = useRequireAuth();
-  const { id } = Route.useParams() as { id: string };
+  const { id } = Route.useParams();
   const navigate = useNavigate();
   const buddy = findBuddy(id);
   if (!ready) return null;
