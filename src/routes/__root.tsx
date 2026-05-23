@@ -72,12 +72,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "First Friend | IÉSEG Peer Support" },
+      { title: "IÉSEG First Friend" },
       { name: "description", content: "Find your trusted senior buddy during your first month at IÉSEG." },
-      { property: "og:title", content: "First Friend | IÉSEG Peer Support" },
+      { property: "og:title", content: "IÉSEG First Friend" },
       { property: "og:description", content: "Find your trusted senior buddy during your first month at IÉSEG." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "IÉSEG First Friend" },
+      { name: "twitter:description", content: "Find your trusted senior buddy during your first month at IÉSEG." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1779540619047-f312622d-af31-4e9b-87a5-2e4a3b348b27.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1779540619047-f312622d-af31-4e9b-87a5-2e4a3b348b27.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
