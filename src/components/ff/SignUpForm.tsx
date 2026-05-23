@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { FFButton } from "@/components/ff/FFButton";
 import { FFCard } from "@/components/ff/FFCard";
