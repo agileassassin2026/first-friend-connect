@@ -15,7 +15,6 @@ export const Route = createFileRoute("/settings")({
 function Settings() {
   const ready = useRequireAuth();
   const navigate = useNavigate();
-  const [lang, setLang] = useState<"EN" | "FR">("EN");
   const [notif, setNotif] = useState({ matches: true, messages: true, streak: true, weekly: false });
   const [paused, setPaused] = useState(false);
   if (!ready) return null;
@@ -37,19 +36,8 @@ function Settings() {
           <Row label="Program" value={u.program} />
         </Section>
 
-        <Section title="Language" icon="translate">
-          <div className="flex gap-2 p-1 bg-surface-low rounded-xl w-fit">
-            {(["EN", "FR"] as const).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`px-6 py-2 rounded-lg font-bold text-sm transition ${lang === l ? "bg-primary text-navy" : "text-muted-foreground"}`}
-              >
-                {l === "EN" ? "English" : "Français"}
-              </button>
-            ))}
-          </div>
-        </Section>
+
+
 
         <Section title="Notifications" icon="notifications">
           {([

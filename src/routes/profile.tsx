@@ -46,10 +46,9 @@ function ProfilePage() {
         </div>
 
         <FFCard className="p-0 overflow-hidden">
-          <div className="hero-gradient h-32" />
-          <div className="px-6 md:px-8 pb-8 -mt-12">
-            <div className="flex flex-col md:flex-row md:items-end gap-4">
-              <Avatar name={u.name} src={u.avatar} size={96} className="ring-4 ring-white" />
+          <div className="px-6 md:px-8 pt-6 pb-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <Avatar name={u.name} src={u.avatar} size={96} />
               <div className="flex-1">
                 {editing ? (
                   <FFInput value={name} onChange={(e) => setName(e.target.value)} />
