@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
@@ -21,6 +21,8 @@ function ProfilePage() {
   const u = getUser();
   const [name, setName] = useState(u?.name || "");
   const [bio, setBio] = useState(u?.bio || "");
+  const [avatar, setAvatar] = useState(u?.avatar || "");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   if (!ready || !u) return null;
   const isBuddy = u.role === "senior-buddy";
@@ -30,6 +32,20 @@ function ProfilePage() {
   function save() {
     updateUser({ name, bio });
     setEditing(false);
+  }
+
+  function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result);
+      setAvatar(dataUrl);
+      updateUser({ avatar: dataUrl });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   }
 
   return (
