@@ -4,7 +4,7 @@ import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Icon } from "@/components/ff/Icon";
-import { getUser, logout } from "@/lib/auth";
+import { getUser, getSwitchEligibility, logout, updateUser } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/settings")({
