@@ -105,13 +105,14 @@ export async function logout() {
 }
 
 export type MatchStatus = "none" | "pending" | "accepted" | "declined";
-export function getMatch(): { buddyId: string; status: MatchStatus } | null {
+export type StoredMatch = { buddyId: string; status: MatchStatus; requestId?: string };
+export function getMatch(): StoredMatch | null {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(MATCH_KEY);
   return raw ? JSON.parse(raw) : null;
 }
-export function setMatch(buddyId: string, status: MatchStatus) {
-  localStorage.setItem(MATCH_KEY, JSON.stringify({ buddyId, status }));
+export function setMatch(buddyId: string, status: MatchStatus, requestId?: string) {
+  localStorage.setItem(MATCH_KEY, JSON.stringify({ buddyId, status, requestId }));
   window.dispatchEvent(new Event("ff:match"));
 }
 
