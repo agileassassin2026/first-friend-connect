@@ -23,7 +23,7 @@ function Login() {
     const stored = getUser();
     if (stored && stored.email.toLowerCase() === email.toLowerCase()) {
       setUser(stored);
-      navigate({ to: stored.onboarded ? "/matches" : stored.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
+      navigate({ to: stored.onboarded ? "/profile" : stored.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
       return;
     }
     // demo: allow any non-empty email/password and create a temp student
