@@ -6,6 +6,7 @@ import { FFInput } from "@/components/ff/FFInput";
 import { Icon } from "@/components/ff/Icon";
 import { Logo } from "@/components/ff/Logo";
 import { findAccountByEmail, getUser, setUser } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
   component: Login,
