@@ -36,6 +36,10 @@ function Settings() {
           <Row label="Program" value={u.program} />
         </Section>
 
+        <RoleSwitchSection />
+
+
+
 
 
 
