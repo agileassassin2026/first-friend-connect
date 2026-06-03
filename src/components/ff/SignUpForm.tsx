@@ -6,6 +6,7 @@ import { FFInput, FFSelect } from "@/components/ff/FFInput";
 import { Chip } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
 import { setUser, type Role } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import { CAMPUSES, LANGUAGES, PROGRAMS } from "@/lib/data";
 
 export function SignUpForm({ role }: { role: Role }) {
