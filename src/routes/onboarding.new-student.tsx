@@ -43,7 +43,6 @@ function NewStudentOnboarding() {
       availability,
       bio,
       onboarded: true,
-      avatar: `https://i.pravatar.cc/200?u=${user.email}`,
     });
     completeStreakAction("profile");
     navigate({ to: "/profile" });
