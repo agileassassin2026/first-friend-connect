@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Chip, Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, getAccountBuddies, type ProgramLevel } from "@/lib/data";
-import { getUser } from "@/lib/auth";
+import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, userToBuddy, type Buddy, type ProgramLevel } from "@/lib/data";
+import { getUser, type User } from "@/lib/auth";
+import { fetchAllProfiles } from "@/lib/profiles";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/matches")({
