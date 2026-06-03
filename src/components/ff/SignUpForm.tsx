@@ -25,10 +25,23 @@ export function SignUpForm({ role }: { role: Role }) {
     setLanguages((prev) => (prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l]));
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
+    setError("");
+    setSubmitting(true);
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/profile` },
+    });
+    if (signUpError || !data.user) {
+      setSubmitting(false);
+      setError(signUpError?.message ?? "Could not create account. Try again.");
+      return;
+    }
     setUser({
-      id: crypto.randomUUID(),
+      id: data.user.id,
       name,
       email,
       role,
