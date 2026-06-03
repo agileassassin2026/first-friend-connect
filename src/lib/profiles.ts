@@ -1,12 +1,9 @@
 // Profile sync between local User shape and the Lovable Cloud `profiles` table.
+// Discovery (cross-user reads) goes through SECURITY DEFINER RPCs that only
+// expose safe public columns. Self-reads of the base table return all fields
+// for the owner (RLS: auth.uid() = user_id).
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Role } from "./auth";
-
-// Sensitive columns (email, emotional_state, support_needs, capacity) are
-// hidden from other authenticated users via column-level grants in Postgres.
-// Selects use this safe column list so they work for both self and others.
-const PUBLIC_COLS =
-  "id,user_id,name,role,original_role,campus,program,languages,expertise,interests,buddy_style,mentoring_style,availability,bio,avatar,onboarded,account_created_at,created_at,updated_at";
 
 type PublicRow = {
   user_id: string;
@@ -15,12 +12,12 @@ type PublicRow = {
   original_role: string | null;
   campus: string;
   program: string;
-  languages: string[];
-  expertise: string[];
-  interests: string[];
-  buddy_style: string[];
-  mentoring_style: string[];
-  availability: string[];
+  languages: string[] | null;
+  expertise: string[] | null;
+  interests: string[] | null;
+  buddy_style: string[] | null;
+  mentoring_style: string[] | null;
+  availability: string[] | null;
   bio: string | null;
   avatar: string | null;
   onboarded: boolean;
@@ -55,7 +52,7 @@ function userToRow(u: User) {
     email: u.email,
     name: u.name ?? "",
     role: u.role,
-    original_role: u.originalRole ?? null,
+    original_role: u.originalRole ?? u.role,
     campus: u.campus ?? "",
     program: u.program ?? "",
     languages: u.languages ?? [],
@@ -70,7 +67,7 @@ function userToRow(u: User) {
     bio: u.bio ?? null,
     avatar: u.avatar ?? null,
     onboarded: u.onboarded ?? false,
-    account_created_at: u.createdAt,
+    account_created_at: u.createdAt ?? new Date().toISOString(),
   };
 }
 
@@ -79,31 +76,38 @@ export async function upsertProfile(u: User): Promise<void> {
   const { error } = await supabase
     .from("profiles")
     .upsert(userToRow(u), { onConflict: "user_id" });
-  if (error) console.error("profiles upsert failed:", error.message);
+  if (error) console.error("[profiles] upsert failed:", error.message, error);
+  else console.log("[profiles] upserted", u.id, u.role);
 }
 
+// Fetch own full profile (base table, RLS-scoped to owner).
 export async function fetchProfile(userId: string): Promise<User | null> {
-  const { data, error } = await supabase
+  // Try base table first (works for the owner — returns email, etc.)
+  const { data: own } = await supabase
     .from("profiles")
-    .select(PUBLIC_COLS)
+    .select("*")
     .eq("user_id", userId)
     .maybeSingle();
+  if (own) {
+    return rowToUser(own as unknown as PublicRow, { email: (own as { email?: string }).email ?? "" });
+  }
+  // Fallback: someone else's profile via discovery RPC (safe columns only).
+  const { data, error } = await supabase.rpc("get_public_profile", { _user_id: userId });
   if (error) {
-    console.error("fetchProfile failed:", error.message);
+    console.error("[profiles] get_public_profile failed:", error.message);
     return null;
   }
-  if (!data) return null;
-  // Email is sensitive and not selectable from the DB; pull it from auth.
-  const { data: authData } = await supabase.auth.getUser();
-  const email = authData.user?.id === userId ? authData.user?.email ?? "" : "";
-  return rowToUser(data as unknown as PublicRow, { email });
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return null;
+  return rowToUser(row as PublicRow);
 }
 
 export async function fetchAllProfiles(): Promise<User[]> {
-  const { data, error } = await supabase.from("profiles").select(PUBLIC_COLS);
+  const { data, error } = await supabase.rpc("list_public_profiles");
   if (error) {
-    console.error("fetchAllProfiles failed:", error.message);
+    console.error("[profiles] list_public_profiles failed:", error.message);
     return [];
   }
-  return (data ?? []).map((r) => rowToUser(r as unknown as PublicRow));
+  console.log("[profiles] discovered", (data ?? []).length, "profiles");
+  return (data ?? []).map((r) => rowToUser(r as PublicRow));
 }
