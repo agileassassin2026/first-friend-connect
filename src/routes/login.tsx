@@ -5,7 +5,7 @@ import { FFCard } from "@/components/ff/FFCard";
 import { FFInput } from "@/components/ff/FFInput";
 import { Icon } from "@/components/ff/Icon";
 import { Logo } from "@/components/ff/Logo";
-import { getUser, setUser } from "@/lib/auth";
+import { findAccountByEmail, getUser, setUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -20,27 +20,27 @@ function Login() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const stored = getUser();
-    if (stored && stored.email.toLowerCase() === email.toLowerCase()) {
-      setUser(stored);
-      navigate({ to: stored.onboarded ? "/profile" : stored.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
+    if (!email || !password) {
+      setError("Please enter your email and password.");
       return;
     }
-    // demo: allow any non-empty email/password and create a temp student
-    if (email && password) {
-      setUser({
-        id: crypto.randomUUID(),
-        name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-        email,
-        role: "new-student",
-        campus: "Lille",
-        program: "Master Cycle (Grande École)",
-        languages: ["English", "French"],
-      });
-      navigate({ to: "/onboarding/new-student" });
+    const existing = findAccountByEmail(email) ?? (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
+    if (existing) {
+      setUser(existing);
+      navigate({ to: existing.onboarded ? "/profile" : existing.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
       return;
     }
-    setError("Please enter your email and password.");
+    // demo: create a temp student for unknown emails
+    setUser({
+      id: crypto.randomUUID(),
+      name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+      email,
+      role: "new-student",
+      campus: "Lille",
+      program: "Master Cycle (Grande École)",
+      languages: ["English", "French"],
+    });
+    navigate({ to: "/onboarding/new-student" });
   }
 
   return (
