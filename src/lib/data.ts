@@ -198,9 +198,9 @@ export const BUDDIES: Buddy[] = [
 // searched, scored, and rendered alongside the seeded sample buddies.
 export function userToBuddy(u: User): Buddy {
   return {
-    id: `acct:${(u.email || u.id).toLowerCase()}`,
+    id: `acct:${u.id}`,
     name: u.name || u.email || "Member",
-    avatar: u.avatar || `https://i.pravatar.cc/200?u=${encodeURIComponent(u.email || u.id)}`,
+    avatar: u.avatar || `https://i.pravatar.cc/200?u=${encodeURIComponent(u.id)}`,
     campus: u.campus || "",
     program: u.program || "",
     languages: u.languages || [],
