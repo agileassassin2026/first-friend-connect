@@ -18,6 +18,8 @@ export function SignUpForm({ role }: { role: Role }) {
   const [program, setProgram] = useState(PROGRAMS[0]);
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [capacity, setCapacity] = useState(2);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function toggleLang(l: string) {
     setLanguages((prev) => (prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l]));
