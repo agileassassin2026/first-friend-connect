@@ -20,21 +20,32 @@ function Login() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     if (!email || !password) {
       setError("Please enter your email and password.");
       return;
     }
-    const existing = findAccountByEmail(email) ?? (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
+    setError("");
+    setSubmitting(true);
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    setSubmitting(false);
+    if (signInError || !data.user) {
+      setError("Incorrect email or password.");
+      return;
+    }
+    const existing =
+      findAccountByEmail(email) ??
+      (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
     if (existing) {
-      setUser({ ...existing, onboarded: true });
+      setUser({ ...existing, id: data.user.id, onboarded: true });
       navigate({ to: "/profile" });
       return;
     }
-    // demo: create a temp student for unknown emails — login skips onboarding
+    // Authenticated but no local profile on this device — send to profile with a minimal record.
     setUser({
-      id: crypto.randomUUID(),
+      id: data.user.id,
       name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
       email,
       role: "new-student",
