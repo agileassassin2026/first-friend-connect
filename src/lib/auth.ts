@@ -1,4 +1,4 @@
-// Local session helpers; profile data is mirrored to Lovable Cloud.
+// Local session helpers. Profile writes use saveUser/saveUserPatch so Lovable Cloud is the source of truth.
 export type Role = "new-student" | "senior-buddy";
 
 export type User = {
@@ -61,8 +61,6 @@ export function setUser(u: User | null) {
       accounts[u.email.toLowerCase()] = u;
       writeAccounts(accounts);
     }
-    // Mirror to Lovable Cloud so other devices can find this profile.
-    import("./profiles").then(({ upsertProfile }) => upsertProfile(u)).catch(() => {});
   } else {
     localStorage.removeItem(USER_KEY);
   }
