@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as StreakRouteImport } from './routes/streak'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MatchStatusRouteImport } from './routes/match-status'
@@ -39,6 +40,11 @@ const StreakRoute = StreakRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -227,6 +239,7 @@ export interface RootRouteChildren {
   MatchStatusRoute: typeof MatchStatusRoute
   MatchesRoute: typeof MatchesRouteWithChildren
   ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
   StreakRoute: typeof StreakRoute
   SupportRoute: typeof SupportRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -373,6 +393,7 @@ const rootRouteChildren: RootRouteChildren = {
   MatchStatusRoute: MatchStatusRoute,
   MatchesRoute: MatchesRouteWithChildren,
   ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
   StreakRoute: StreakRoute,
   SupportRoute: SupportRoute,
