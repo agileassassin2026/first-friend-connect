@@ -34,7 +34,7 @@ function SeniorOnboarding() {
     set((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
 
   function finish() {
-    updateUser({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true, avatar: `https://i.pravatar.cc/200?u=${user.email}` });
+    updateUser({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true });
     completeStreakAction("profile");
     navigate({ to: "/profile" });
   }
