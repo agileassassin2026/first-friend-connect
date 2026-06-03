@@ -26,11 +26,11 @@ function Login() {
     }
     const existing = findAccountByEmail(email) ?? (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
     if (existing) {
-      setUser(existing);
-      navigate({ to: existing.onboarded ? "/profile" : existing.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
+      setUser({ ...existing, onboarded: true });
+      navigate({ to: "/profile" });
       return;
     }
-    // demo: create a temp student for unknown emails
+    // demo: create a temp student for unknown emails — login skips onboarding
     setUser({
       id: crypto.randomUUID(),
       name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -39,8 +39,9 @@ function Login() {
       campus: "Lille",
       program: "Master Cycle (Grande École)",
       languages: ["English", "French"],
+      onboarded: true,
     });
-    navigate({ to: "/onboarding/new-student" });
+    navigate({ to: "/profile" });
   }
 
   return (
