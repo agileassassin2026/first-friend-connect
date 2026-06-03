@@ -61,7 +61,31 @@ function Matches() {
           </FFButton>
         </div>
 
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+            <Icon name="search" />
+          </span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search buddies by name…"
+            className="w-full pl-10 pr-10 py-3 rounded-lg bg-white border border-border text-navy placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full hover:bg-surface-high flex items-center justify-center text-muted-foreground"
+              aria-label="Clear search"
+            >
+              <Icon name="close" />
+            </button>
+          )}
+        </div>
+
         <div className="grid md:grid-cols-2 gap-6">
+
           {scored.map(({ buddy, score, reasons, sharedInterests }) => (
             <FFCard key={buddy.id} className="hover:shadow-card-hover transition-shadow">
               <div className="flex items-start gap-4">
