@@ -49,6 +49,8 @@ function Login() {
       name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
       email,
       role: "new-student",
+      originalRole: "new-student",
+      createdAt: new Date().toISOString(),
       campus: "Lille",
       program: "Master Cycle (Grande École)",
       languages: ["English", "French"],
