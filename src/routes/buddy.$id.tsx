@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
 import { Avatar } from "@/components/ff/Avatar";
-import { findBuddy, scoreMatch } from "@/lib/data";
+import { findBuddy, scoreMatch, userToBuddy, type Buddy } from "@/lib/data";
+import { fetchProfile } from "@/lib/profiles";
 import { getUser, setMatch, completeStreakAction } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -18,8 +20,24 @@ function BuddyDetail() {
   const ready = useRequireAuth();
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const buddy = findBuddy(id);
-  if (!ready) return null;
+  const [buddy, setBuddy] = useState<Buddy | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (!ready) return;
+    const seeded = findBuddy(id);
+    if (seeded) {
+      setBuddy(seeded);
+      return;
+    }
+    if (id.startsWith("acct:")) {
+      const userId = id.slice("acct:".length);
+      fetchProfile(userId).then((u) => setBuddy(u ? userToBuddy(u) : null));
+    } else {
+      setBuddy(null);
+    }
+  }, [id, ready]);
+
+  if (!ready || buddy === undefined) return null;
   if (!buddy) {
     return (
       <AppShell>
