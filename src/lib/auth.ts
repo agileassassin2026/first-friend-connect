@@ -71,8 +71,14 @@ export function updateUser(patch: Partial<User>) {
   setUser({ ...cur, ...patch });
 }
 
-export function logout() {
+export async function logout() {
   if (typeof window === "undefined") return;
+  try {
+    const { supabase } = await import("@/integrations/supabase/client");
+    await supabase.auth.signOut();
+  } catch {
+    // ignore — still clear local state below
+  }
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem(MATCH_KEY);
   localStorage.removeItem(STREAK_KEY);

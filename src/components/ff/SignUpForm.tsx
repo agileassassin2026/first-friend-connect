@@ -6,6 +6,7 @@ import { FFInput, FFSelect } from "@/components/ff/FFInput";
 import { Chip } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
 import { setUser, type Role } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import { CAMPUSES, LANGUAGES, PROGRAMS } from "@/lib/data";
 
 export function SignUpForm({ role }: { role: Role }) {
@@ -17,15 +18,30 @@ export function SignUpForm({ role }: { role: Role }) {
   const [program, setProgram] = useState(PROGRAMS[0]);
   const [languages, setLanguages] = useState<string[]>(["English"]);
   const [capacity, setCapacity] = useState(2);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function toggleLang(l: string) {
     setLanguages((prev) => (prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l]));
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
+    setError("");
+    setSubmitting(true);
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/profile` },
+    });
+    if (signUpError || !data.user) {
+      setSubmitting(false);
+      setError(signUpError?.message ?? "Could not create account. Try again.");
+      return;
+    }
     setUser({
-      id: crypto.randomUUID(),
+      id: data.user.id,
       name,
       email,
       role,
@@ -85,7 +101,8 @@ export function SignUpForm({ role }: { role: Role }) {
                 {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n} buddy{n > 1 ? "s" : ""}</option>)}
               </FFSelect>
             )}
-            <FFButton type="submit" full size="lg">Continue to onboarding <Icon name="arrow_forward" /></FFButton>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <FFButton type="submit" full size="lg" disabled={submitting}>{submitting ? "Creating account…" : <>Continue to onboarding <Icon name="arrow_forward" /></>}</FFButton>
           </form>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account? <Link to="/login" className="text-primary font-bold">Login</Link>
