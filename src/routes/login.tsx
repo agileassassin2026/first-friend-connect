@@ -36,6 +36,13 @@ function Login() {
       setError("Incorrect email or password.");
       return;
     }
+    // Prefer the cloud-stored profile so the user gets the same data on any device.
+    const cloudProfile = await fetchProfile(data.user.id);
+    if (cloudProfile) {
+      setUser({ ...cloudProfile, onboarded: true });
+      navigate({ to: "/profile" });
+      return;
+    }
     const existing =
       findAccountByEmail(email) ??
       (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
@@ -44,7 +51,7 @@ function Login() {
       navigate({ to: "/profile" });
       return;
     }
-    // Authenticated but no local profile on this device — send to profile with a minimal record.
+    // Authenticated but no profile yet — create a minimal record.
     setUser({
       id: data.user.id,
       name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
