@@ -13,11 +13,14 @@ type PublicRow = {
   campus: string;
   program: string;
   languages: string[] | null;
+  support_needs?: string[] | null;
   expertise: string[] | null;
+  emotional_state?: string | null;
   interests: string[] | null;
   buddy_style: string[] | null;
   mentoring_style: string[] | null;
   availability: string[] | null;
+  capacity?: number | null;
   bio: string | null;
   avatar: string | null;
   onboarded: boolean;
@@ -35,11 +38,14 @@ export function rowToUser(row: PublicRow, opts?: { email?: string }): User {
     campus: row.campus,
     program: row.program,
     languages: row.languages ?? [],
+    supportNeeds: row.support_needs ?? [],
     expertise: row.expertise ?? [],
+    emotionalState: row.emotional_state ?? undefined,
     interests: row.interests ?? [],
     buddyStyle: row.buddy_style ?? [],
     mentoringStyle: row.mentoring_style ?? [],
     availability: row.availability ?? [],
+    capacity: row.capacity ?? undefined,
     bio: row.bio ?? undefined,
     avatar: row.avatar ?? undefined,
     onboarded: row.onboarded,
@@ -48,6 +54,7 @@ export function rowToUser(row: PublicRow, opts?: { email?: string }): User {
 
 function userToRow(u: User) {
   return {
+    id: u.id,
     user_id: u.id,
     email: u.email,
     name: u.name ?? "",
@@ -71,13 +78,17 @@ function userToRow(u: User) {
   };
 }
 
-export async function upsertProfile(u: User): Promise<void> {
-  if (!u.id) return;
+export async function upsertProfile(u: User): Promise<boolean> {
+  if (!u.id) return false;
   const { error } = await supabase
     .from("profiles")
     .upsert(userToRow(u), { onConflict: "user_id" });
-  if (error) console.error("[profiles] upsert failed:", error.message, error);
-  else console.log("[profiles] upserted", u.id, u.role);
+  if (error) {
+    console.error("[profiles] upsert failed:", error.message, error);
+    return false;
+  }
+  console.log("[profiles] upserted", u.id, u.role);
+  return true;
 }
 
 // Fetch own full profile (base table, RLS-scoped to owner).

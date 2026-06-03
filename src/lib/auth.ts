@@ -1,4 +1,4 @@
-// Mock auth + data layer using localStorage
+// Local session helpers. Profile writes use saveUser/saveUserPatch so Lovable Cloud is the source of truth.
 export type Role = "new-student" | "senior-buddy";
 
 export type User = {
@@ -61,18 +61,33 @@ export function setUser(u: User | null) {
       accounts[u.email.toLowerCase()] = u;
       writeAccounts(accounts);
     }
-    // Mirror to Lovable Cloud so other devices can find this profile.
-    import("./profiles").then(({ upsertProfile }) => upsertProfile(u)).catch(() => {});
   } else {
     localStorage.removeItem(USER_KEY);
   }
   window.dispatchEvent(new Event("ff:user"));
 }
 
+export async function saveUser(u: User): Promise<boolean> {
+  setUser(u);
+  try {
+    const { upsertProfile } = await import("./profiles");
+    return upsertProfile(u);
+  } catch (error) {
+    console.error("[profiles] save failed:", error);
+    return false;
+  }
+}
+
 export function updateUser(patch: Partial<User>) {
   const cur = getUser();
   if (!cur) return;
   setUser({ ...cur, ...patch });
+}
+
+export async function saveUserPatch(patch: Partial<User>): Promise<boolean> {
+  const cur = getUser();
+  if (!cur) return false;
+  return saveUser({ ...cur, ...patch });
 }
 
 export async function logout() {

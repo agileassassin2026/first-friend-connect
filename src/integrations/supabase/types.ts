@@ -52,7 +52,7 @@ export type Database = {
           email: string
           emotional_state?: string | null
           expertise?: string[]
-          id?: string
+          id: string
           interests?: string[]
           languages?: string[]
           mentoring_style?: string[]

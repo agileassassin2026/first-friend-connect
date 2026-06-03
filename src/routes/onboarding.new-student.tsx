@@ -6,7 +6,7 @@ import { Chip } from "@/components/ff/Chip";
 import { Avatar } from "@/components/ff/Avatar";
 import { Icon } from "@/components/ff/Icon";
 import { FFTextarea } from "@/components/ff/FFInput";
-import { getUser, updateUser, completeStreakAction } from "@/lib/auth";
+import { getUser, saveUserPatch, completeStreakAction } from "@/lib/auth";
 import { AVAILABILITY, BUDDY_STYLES, EMOTIONAL_STATES, INTERESTS, SUPPORT_NEEDS } from "@/lib/data";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -34,8 +34,8 @@ function NewStudentOnboarding() {
   const toggle = (set: React.Dispatch<React.SetStateAction<string[]>>, val: string) =>
     set((p) => (p.includes(val) ? p.filter((x) => x !== val) : [...p, val]));
 
-  function finish() {
-    updateUser({
+  async function finish() {
+    await saveUserPatch({
       supportNeeds,
       emotionalState,
       interests,

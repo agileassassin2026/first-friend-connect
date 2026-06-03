@@ -4,7 +4,7 @@ import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Icon } from "@/components/ff/Icon";
-import { getUser, getSwitchEligibility, logout, updateUser } from "@/lib/auth";
+import { getUser, getSwitchEligibility, logout, saveUserPatch } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/settings")({
@@ -92,10 +92,10 @@ function RoleSwitchSection() {
     ? eligibleAt.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
     : "—";
 
-  function switchToBuddy() {
+  async function switchToBuddy() {
     if (!allowed) return;
     if (!confirm("Switch to a Senior Buddy account? You'll go through the buddy onboarding next.")) return;
-    updateUser({ role: "senior-buddy" });
+    await saveUserPatch({ role: "senior-buddy" });
     force((n) => n + 1);
     navigate({ to: "/onboarding/senior-buddy" });
   }

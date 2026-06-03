@@ -5,7 +5,7 @@ import { FFCard } from "@/components/ff/FFCard";
 import { FFInput } from "@/components/ff/FFInput";
 import { Icon } from "@/components/ff/Icon";
 import { Logo } from "@/components/ff/Logo";
-import { findAccountByEmail, getUser, setUser } from "@/lib/auth";
+import { findAccountByEmail, getUser, saveUser } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchProfile } from "@/lib/profiles";
 
@@ -39,7 +39,7 @@ function Login() {
     // Prefer the cloud-stored profile so the user gets the same data on any device.
     const cloudProfile = await fetchProfile(data.user.id);
     if (cloudProfile) {
-      setUser({ ...cloudProfile, onboarded: true });
+      await saveUser({ ...cloudProfile, email, onboarded: cloudProfile.onboarded });
       navigate({ to: "/profile" });
       return;
     }
@@ -47,12 +47,12 @@ function Login() {
       findAccountByEmail(email) ??
       (getUser()?.email.toLowerCase() === email.toLowerCase() ? getUser() : null);
     if (existing) {
-      setUser({ ...existing, id: data.user.id, onboarded: true });
+      await saveUser({ ...existing, id: data.user.id, email, onboarded: existing.onboarded ?? true });
       navigate({ to: "/profile" });
       return;
     }
     // Authenticated but no profile yet — create a minimal record.
-    setUser({
+    await saveUser({
       id: data.user.id,
       name: email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
       email,
