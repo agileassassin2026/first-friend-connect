@@ -4,7 +4,7 @@ import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Icon } from "@/components/ff/Icon";
-import { getUser, logout } from "@/lib/auth";
+import { getUser, getSwitchEligibility, logout, updateUser } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/settings")({
@@ -35,6 +35,10 @@ function Settings() {
           <Row label="Campus" value={u.campus} />
           <Row label="Program" value={u.program} />
         </Section>
+
+        <RoleSwitchSection />
+
+
 
 
 
@@ -73,6 +77,47 @@ function Settings() {
     </AppShell>
   );
 }
+
+function RoleSwitchSection() {
+  const u = getUser();
+  const navigate = useNavigate();
+  const [, force] = useState(0);
+  if (!u) return null;
+  const { allowed, eligibleAt, reason } = getSwitchEligibility(u);
+
+  // Hide entirely for accounts that started as Senior Buddy (no switching allowed).
+  if (reason === "already-buddy" || reason === "not-new-student") return null;
+
+  const fmt = eligibleAt
+    ? eligibleAt.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+    : "—";
+
+  function switchToBuddy() {
+    if (!allowed) return;
+    if (!confirm("Switch to a Senior Buddy account? You'll go through the buddy onboarding next.")) return;
+    updateUser({ role: "senior-buddy" });
+    force((n) => n + 1);
+    navigate({ to: "/onboarding/senior-buddy" });
+  }
+
+  return (
+    <Section title="Account role" icon="swap_horiz">
+      <Row label="Current role" value="New Student" />
+      <Row label="Eligible to switch on" value={fmt} />
+      <p className="text-xs text-muted-foreground pt-2">
+        New Student accounts can switch to Senior Buddy after 2 years. Accounts that signed up as Senior Buddy cannot switch back.
+      </p>
+      <div className="pt-3">
+        <FFButton onClick={switchToBuddy} disabled={!allowed}>
+          <Icon name="school" />
+          {allowed ? "Switch to Senior Buddy" : `Available on ${fmt}`}
+        </FFButton>
+      </div>
+    </Section>
+  );
+}
+
+
 
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (

@@ -6,6 +6,8 @@ export type User = {
   name: string;
   email: string;
   role: Role;
+  originalRole?: Role; // role at signup — used to gate role switching
+  createdAt?: string;  // ISO timestamp of account creation
   campus: string;
   program: string;
   languages: string[];
@@ -95,6 +97,29 @@ export function setMatch(buddyId: string, status: MatchStatus) {
   localStorage.setItem(MATCH_KEY, JSON.stringify({ buddyId, status }));
   window.dispatchEvent(new Event("ff:match"));
 }
+
+// Role-switch eligibility: only accounts that originally signed up as
+// "new-student" can switch to "senior-buddy", and only after 2 years.
+export const SWITCH_TO_BUDDY_AFTER_MS = 2 * 365 * 24 * 60 * 60 * 1000;
+export function getSwitchEligibility(u: User | null): {
+  allowed: boolean;
+  eligibleAt: Date | null;
+  reason: "not-new-student" | "too-early" | "already-buddy" | "ok";
+} {
+  if (!u) return { allowed: false, eligibleAt: null, reason: "not-new-student" };
+  if (u.role === "senior-buddy") return { allowed: false, eligibleAt: null, reason: "already-buddy" };
+  if (u.originalRole && u.originalRole !== "new-student")
+    return { allowed: false, eligibleAt: null, reason: "not-new-student" };
+  const created = u.createdAt ? new Date(u.createdAt).getTime() : Date.now();
+  const eligibleAt = new Date(created + SWITCH_TO_BUDDY_AFTER_MS);
+  return {
+    allowed: Date.now() >= eligibleAt.getTime(),
+    eligibleAt,
+    reason: Date.now() >= eligibleAt.getTime() ? "ok" : "too-early",
+  };
+}
+
+
 
 export type StreakState = {
   completed: string[]; // action ids

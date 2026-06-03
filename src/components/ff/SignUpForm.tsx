@@ -45,6 +45,8 @@ export function SignUpForm({ role }: { role: Role }) {
       name,
       email,
       role,
+      originalRole: role,
+      createdAt: new Date().toISOString(),
       campus,
       program,
       languages,
