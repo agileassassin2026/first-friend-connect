@@ -48,6 +48,7 @@ export function rowToUser(row: PublicRow, opts?: { email?: string }): User {
 
 function userToRow(u: User) {
   return {
+    id: u.id,
     user_id: u.id,
     email: u.email,
     name: u.name ?? "",
@@ -71,13 +72,17 @@ function userToRow(u: User) {
   };
 }
 
-export async function upsertProfile(u: User): Promise<void> {
-  if (!u.id) return;
+export async function upsertProfile(u: User): Promise<boolean> {
+  if (!u.id) return false;
   const { error } = await supabase
     .from("profiles")
     .upsert(userToRow(u), { onConflict: "user_id" });
-  if (error) console.error("[profiles] upsert failed:", error.message, error);
-  else console.log("[profiles] upserted", u.id, u.role);
+  if (error) {
+    console.error("[profiles] upsert failed:", error.message, error);
+    return false;
+  }
+  console.log("[profiles] upserted", u.id, u.role);
+  return true;
 }
 
 // Fetch own full profile (base table, RLS-scoped to owner).
