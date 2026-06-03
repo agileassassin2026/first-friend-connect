@@ -23,7 +23,7 @@ function Login() {
     const stored = getUser();
     if (stored && stored.email.toLowerCase() === email.toLowerCase()) {
       setUser(stored);
-      navigate({ to: stored.onboarded ? "/matches" : stored.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
+      navigate({ to: stored.onboarded ? "/profile" : stored.role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
       return;
     }
     // demo: allow any non-empty email/password and create a temp student
@@ -65,6 +65,9 @@ function Login() {
           <form onSubmit={submit} className="space-y-4">
             <FFInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@ieseg.fr" required />
             <FFInput label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+            <div className="text-right -mt-2">
+              <Link to="/forgot-password" className="text-sm text-primary font-bold">Forgot password?</Link>
+            </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <FFButton type="submit" full>Login</FFButton>
           </form>

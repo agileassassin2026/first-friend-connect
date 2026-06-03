@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as StreakRouteImport } from './routes/streak'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MatchStatusRouteImport } from './routes/match-status'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignupSeniorBuddyRouteImport } from './routes/signup.senior-buddy'
@@ -40,6 +42,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -58,6 +65,11 @@ const MatchStatusRoute = MatchStatusRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -104,10 +116,12 @@ const BuddyIdRoute = BuddyIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -121,10 +135,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -139,10 +155,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/match-status': typeof MatchStatusRoute
   '/matches': typeof MatchesRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/streak': typeof StreakRoute
   '/support': typeof SupportRoute
@@ -158,10 +176,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/chat'
+    | '/forgot-password'
     | '/login'
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -175,10 +195,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/chat'
+    | '/forgot-password'
     | '/login'
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -192,10 +214,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/chat'
+    | '/forgot-password'
     | '/login'
     | '/match-status'
     | '/matches'
     | '/profile'
+    | '/reset-password'
     | '/settings'
     | '/streak'
     | '/support'
@@ -210,10 +234,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   MatchStatusRoute: typeof MatchStatusRoute
   MatchesRoute: typeof MatchesRouteWithChildren
   ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
   StreakRoute: typeof StreakRoute
   SupportRoute: typeof SupportRoute
@@ -247,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -273,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -348,10 +388,12 @@ const MatchesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   MatchStatusRoute: MatchStatusRoute,
   MatchesRoute: MatchesRouteWithChildren,
   ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
   StreakRoute: StreakRoute,
   SupportRoute: SupportRoute,
