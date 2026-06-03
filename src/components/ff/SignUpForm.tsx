@@ -101,7 +101,8 @@ export function SignUpForm({ role }: { role: Role }) {
                 {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n} buddy{n > 1 ? "s" : ""}</option>)}
               </FFSelect>
             )}
-            <FFButton type="submit" full size="lg">Continue to onboarding <Icon name="arrow_forward" /></FFButton>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <FFButton type="submit" full size="lg" disabled={submitting}>{submitting ? "Creating account…" : <>Continue to onboarding <Icon name="arrow_forward" /></>}</FFButton>
           </form>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account? <Link to="/login" className="text-primary font-bold">Login</Link>
