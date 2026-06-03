@@ -6,8 +6,10 @@ import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Icon } from "@/components/ff/Icon";
 import { Tag } from "@/components/ff/Chip";
-import { findBuddy } from "@/lib/data";
-import { getMatch, getUser, completeStreakAction } from "@/lib/auth";
+import { findBuddy, userToBuddy, type Buddy } from "@/lib/data";
+import { getMatch, getUser, setMatch, completeStreakAction, type StoredMatch } from "@/lib/auth";
+import { fetchLatestMatchRequest } from "@/lib/matchRequests";
+import { fetchProfile } from "@/lib/profiles";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/chat")({
@@ -25,13 +27,49 @@ const ICEBREAKERS = [
 
 function Chat() {
   const ready = useRequireAuth();
-  const match = getMatch();
-  const buddy = match ? findBuddy(match.buddyId) : null;
+  const [match, setLocalMatch] = useState(getMatch());
+  const [buddy, setBuddy] = useState<Buddy | null | undefined>(undefined);
   const accepted = match?.status === "accepted";
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [showReport, setShowReport] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sync = () => setLocalMatch(getMatch());
+    window.addEventListener("ff:match", sync);
+    return () => window.removeEventListener("ff:match", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!ready || match) return;
+    const currentUserId = getUser()?.id;
+    if (!currentUserId) return;
+    fetchLatestMatchRequest(currentUserId).then((request) => {
+      if (!request) return;
+      const targetProfileId = request.requester_id === currentUserId ? request.target_id : request.requester_id;
+      const next: StoredMatch = { buddyId: `acct:${targetProfileId}`, status: request.status, requestId: request.id };
+      console.log("[chat] restored cloud match", { currentUserId, targetProfileId, requestId: request.id, status: request.status });
+      setMatch(next.buddyId, next.status, next.requestId);
+      setLocalMatch(next);
+    });
+  }, [ready, match]);
+
+  useEffect(() => {
+    if (!match) { setBuddy(null); return; }
+    const seeded = findBuddy(match.buddyId);
+    if (seeded) { setBuddy(seeded); return; }
+    if (match.buddyId.startsWith("acct:")) {
+      const targetProfileId = match.buddyId.slice("acct:".length);
+      setBuddy(undefined);
+      fetchProfile(targetProfileId).then((u) => {
+        console.log("[chat] profile fetch result", { targetProfileId, found: Boolean(u), status: match.status });
+        setBuddy(u ? userToBuddy(u) : null);
+      });
+    } else {
+      setBuddy(null);
+    }
+  }, [match]);
 
   useEffect(() => {
     if (accepted && buddy && messages.length === 0) {
