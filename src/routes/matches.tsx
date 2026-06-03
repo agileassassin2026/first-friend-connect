@@ -22,11 +22,14 @@ function Matches() {
   const ready = useRequireAuth();
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
   const scored = useMemo(() => {
     const u = getUser();
     if (!u) return [];
+    const q = query.trim().toLowerCase();
     return BUDDIES.filter((b) => {
+      if (q && !b.name.toLowerCase().includes(q)) return false;
       if (filters.campus.length && !filters.campus.includes(b.campus)) return false;
       if (filters.level.length && !filters.level.some((lv) => PROGRAMS_BY_LEVEL[lv].includes(b.program))) return false;
       if (filters.program.length && !filters.program.includes(b.program)) return false;
@@ -38,7 +41,7 @@ function Matches() {
     })
       .map((b) => ({ buddy: b, ...scoreMatch(u, b) }))
       .sort((a, z) => z.score - a.score);
-  }, [filters]);
+  }, [filters, query]);
 
   if (!ready) return null;
   const u = getUser()!;
