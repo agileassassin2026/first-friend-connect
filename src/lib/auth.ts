@@ -7,7 +7,7 @@ export type User = {
   email: string;
   role: Role;
   originalRole?: Role; // role at signup — used to gate role switching
-  createdAt?: string;  // ISO timestamp of account creation
+  createdAt?: string; // ISO timestamp of account creation
   campus: string;
   program: string;
   languages: string[];
@@ -125,7 +125,8 @@ export function getSwitchEligibility(u: User | null): {
   reason: "not-new-student" | "too-early" | "already-buddy" | "ok";
 } {
   if (!u) return { allowed: false, eligibleAt: null, reason: "not-new-student" };
-  if (u.role === "senior-buddy") return { allowed: false, eligibleAt: null, reason: "already-buddy" };
+  if (u.role === "senior-buddy")
+    return { allowed: false, eligibleAt: null, reason: "already-buddy" };
   if (u.originalRole && u.originalRole !== "new-student")
     return { allowed: false, eligibleAt: null, reason: "not-new-student" };
   const created = u.createdAt ? new Date(u.createdAt).getTime() : Date.now();
@@ -136,8 +137,6 @@ export function getSwitchEligibility(u: User | null): {
     reason: Date.now() >= eligibleAt.getTime() ? "ok" : "too-early",
   };
 }
-
-
 
 export type StreakState = {
   completed: string[]; // action ids

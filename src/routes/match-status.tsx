@@ -8,7 +8,11 @@ import { Icon } from "@/components/ff/Icon";
 import { Tag } from "@/components/ff/Chip";
 import { findBuddy, userToBuddy, type Buddy } from "@/lib/data";
 import { fetchProfile } from "@/lib/profiles";
-import { fetchLatestMatchRequest, fetchMatchRequest, updateMatchRequestStatus } from "@/lib/matchRequests";
+import {
+  fetchLatestMatchRequest,
+  fetchMatchRequest,
+  updateMatchRequestStatus,
+} from "@/lib/matchRequests";
 import { getMatch, getUser, setMatch, type MatchStatus, type StoredMatch } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -35,26 +39,51 @@ function MatchStatus() {
     if (!currentUserId) return;
     fetchLatestMatchRequest(currentUserId).then((request) => {
       if (!request) return;
-      const targetProfileId = request.requester_id === currentUserId ? request.target_id : request.requester_id;
-      const next: StoredMatch = { buddyId: `acct:${targetProfileId}`, status: request.status, requestId: request.id };
-      console.log("[match] restored cloud request", { currentUserId, targetProfileId, requestId: request.id, status: request.status });
+      const targetProfileId =
+        request.requester_id === currentUserId ? request.target_id : request.requester_id;
+      const next: StoredMatch = {
+        buddyId: `acct:${targetProfileId}`,
+        status: request.status,
+        requestId: request.id,
+      };
+      console.log("[match] restored cloud request", {
+        currentUserId,
+        targetProfileId,
+        requestId: request.id,
+        status: request.status,
+      });
       setMatch(next.buddyId, next.status, next.requestId);
       setLocal(next);
     });
   }, [ready, match]);
 
   useEffect(() => {
-    if (!match) { setBuddy(null); return; }
+    if (!match) {
+      setBuddy(null);
+      return;
+    }
     const currentUserId = getUser()?.id;
     const seeded = findBuddy(match.buddyId);
-    if (seeded) { setBuddy(seeded); return; }
+    if (seeded) {
+      setBuddy(seeded);
+      return;
+    }
     if (match.requestId && currentUserId) {
       setBuddy(undefined);
       fetchMatchRequest(match.requestId).then((request) => {
-        if (!request) { setBuddy(null); return; }
-        const targetProfileId = request.requester_id === currentUserId ? request.target_id : request.requester_id;
+        if (!request) {
+          setBuddy(null);
+          return;
+        }
+        const targetProfileId =
+          request.requester_id === currentUserId ? request.target_id : request.requester_id;
         const buddyId = `acct:${targetProfileId}`;
-        console.log("[match] cloud request loaded", { currentUserId, targetProfileId, requestId: request.id, status: request.status });
+        console.log("[match] cloud request loaded", {
+          currentUserId,
+          targetProfileId,
+          requestId: request.id,
+          status: request.status,
+        });
         if (buddyId !== match.buddyId || request.status !== match.status) {
           setMatch(buddyId, request.status, request.id);
           setLocal({ buddyId, status: request.status, requestId: request.id });
@@ -82,7 +111,10 @@ function MatchStatus() {
     if (!buddy || !match) return;
     if (match.requestId) {
       const request = await updateMatchRequestStatus(match.requestId, status);
-      console.log("[match] status changed", { requestId: match.requestId, status: request?.status ?? status });
+      console.log("[match] status changed", {
+        requestId: match.requestId,
+        status: request?.status ?? status,
+      });
       setMatch(buddy.id, request?.status ?? status, match.requestId);
     } else {
       setMatch(buddy.id, status);
@@ -117,9 +149,24 @@ function MatchStatus() {
   }
 
   const cfg = {
-    pending: { icon: "hourglass_top", color: "text-accent bg-accent/20", title: "Request sent", body: `${buddy.name.split(" ")[0]} has been notified. We'll let you know the moment they respond.` },
-    accepted: { icon: "celebration", color: "text-primary bg-primary-soft", title: "It's a match!", body: `${buddy.name.split(" ")[0]} accepted your request. Time to break the ice.` },
-    declined: { icon: "info", color: "text-muted-foreground bg-surface-high", title: "Not this time", body: `${buddy.name.split(" ")[0]} isn't available right now. No worries — plenty of other great seniors are waiting.` },
+    pending: {
+      icon: "hourglass_top",
+      color: "text-accent bg-accent/20",
+      title: "Request sent",
+      body: `${buddy.name.split(" ")[0]} has been notified. We'll let you know the moment they respond.`,
+    },
+    accepted: {
+      icon: "celebration",
+      color: "text-primary bg-primary-soft",
+      title: "It's a match!",
+      body: `${buddy.name.split(" ")[0]} accepted your request. Time to break the ice.`,
+    },
+    declined: {
+      icon: "info",
+      color: "text-muted-foreground bg-surface-high",
+      title: "Not this time",
+      body: `${buddy.name.split(" ")[0]} isn't available right now. No worries — plenty of other great seniors are waiting.`,
+    },
     none: { icon: "search", color: "", title: "", body: "" },
   }[match.status];
 
@@ -127,7 +174,9 @@ function MatchStatus() {
     <AppShell>
       <div className="max-w-2xl mx-auto p-6 md:p-10 space-y-6">
         <FFCard className="text-center space-y-5 py-12">
-          <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${cfg.color}`}>
+          <div
+            className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${cfg.color}`}
+          >
             <Icon name={cfg.icon} className="text-4xl" />
           </div>
           <div>
@@ -138,22 +187,43 @@ function MatchStatus() {
             <Avatar name={buddy.name} src={buddy.avatar} size={56} />
             <div className="text-left">
               <p className="font-bold">{buddy.name}</p>
-              <p className="text-xs text-muted-foreground">{buddy.program} · {buddy.campus}</p>
+              <p className="text-xs text-muted-foreground">
+                {buddy.program} · {buddy.campus}
+              </p>
             </div>
-            <Tag tone={match.status === "accepted" ? "primary" : match.status === "pending" ? "accent" : "navy"} className="ml-auto capitalize">{match.status}</Tag>
+            <Tag
+              tone={
+                match.status === "accepted"
+                  ? "primary"
+                  : match.status === "pending"
+                    ? "accent"
+                    : "navy"
+              }
+              className="ml-auto capitalize"
+            >
+              {match.status}
+            </Tag>
           </div>
 
           {match.status === "pending" && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <FFButton variant="outline" onClick={() => setStatus("accepted")}><Icon name="check" /> Simulate accepted</FFButton>
-              <FFButton variant="ghost" onClick={() => setStatus("declined")}>Simulate declined</FFButton>
+              <FFButton variant="outline" onClick={() => setStatus("accepted")}>
+                <Icon name="check" /> Simulate accepted
+              </FFButton>
+              <FFButton variant="ghost" onClick={() => setStatus("declined")}>
+                Simulate declined
+              </FFButton>
             </div>
           )}
           {match.status === "accepted" && (
-            <FFButton size="lg" onClick={() => navigate({ to: "/chat" })}><Icon name="chat_bubble" /> Open chat</FFButton>
+            <FFButton size="lg" onClick={() => navigate({ to: "/chat" })}>
+              <Icon name="chat_bubble" /> Open chat
+            </FFButton>
           )}
           {match.status === "declined" && (
-            <Link to="/matches"><FFButton size="lg">Browse more buddies</FFButton></Link>
+            <Link to="/matches">
+              <FFButton size="lg">Browse more buddies</FFButton>
+            </Link>
           )}
         </FFCard>
       </div>
@@ -167,8 +237,12 @@ function Empty() {
       <FFCard className="text-center py-12 space-y-4">
         <Icon name="search" className="text-5xl text-primary" />
         <h1 className="text-2xl font-extrabold">No match request yet</h1>
-        <p className="text-muted-foreground">Find a buddy you click with and send your first request.</p>
-        <Link to="/matches"><FFButton>Find a buddy</FFButton></Link>
+        <p className="text-muted-foreground">
+          Find a buddy you click with and send your first request.
+        </p>
+        <Link to="/matches">
+          <FFButton>Find a buddy</FFButton>
+        </Link>
       </FFCard>
     </div>
   );

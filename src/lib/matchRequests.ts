@@ -10,7 +10,10 @@ export type MatchRequest = {
   updated_at: string;
 };
 
-export async function createMatchRequest(requesterId: string, targetId: string): Promise<MatchRequest | null> {
+export async function createMatchRequest(
+  requesterId: string,
+  targetId: string,
+): Promise<MatchRequest | null> {
   console.log("[match_requests] create", { requesterId, targetId, status: "pending" });
   const { data, error } = await supabase
     .from("match_requests")
@@ -77,7 +80,10 @@ export async function fetchLatestMatchRequest(currentUserId: string): Promise<Ma
   return (data as MatchRequest | null) ?? null;
 }
 
-export async function updateMatchRequestStatus(requestId: string, status: Exclude<MatchStatus, "none">): Promise<MatchRequest | null> {
+export async function updateMatchRequestStatus(
+  requestId: string,
+  status: Exclude<MatchStatus, "none">,
+): Promise<MatchRequest | null> {
   console.log("[match_requests] update status", { requestId, status });
   const { data, error } = await supabase
     .from("match_requests")
