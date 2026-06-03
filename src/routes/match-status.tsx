@@ -6,7 +6,8 @@ import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Icon } from "@/components/ff/Icon";
 import { Tag } from "@/components/ff/Chip";
-import { findBuddy } from "@/lib/data";
+import { findBuddy, userToBuddy, type Buddy } from "@/lib/data";
+import { fetchProfile } from "@/lib/profiles";
 import { getMatch, setMatch } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -19,12 +20,26 @@ function MatchStatus() {
   const ready = useRequireAuth();
   const navigate = useNavigate();
   const [match, setLocal] = useState(getMatch());
+  const [buddy, setBuddy] = useState<Buddy | null | undefined>(undefined);
 
   useEffect(() => {
     const sync = () => setLocal(getMatch());
     window.addEventListener("ff:match", sync);
     return () => window.removeEventListener("ff:match", sync);
   }, []);
+
+  useEffect(() => {
+    if (!match) { setBuddy(null); return; }
+    const seeded = findBuddy(match.buddyId);
+    if (seeded) { setBuddy(seeded); return; }
+    if (match.buddyId.startsWith("acct:")) {
+      const userId = match.buddyId.slice("acct:".length);
+      setBuddy(undefined);
+      fetchProfile(userId).then((u) => setBuddy(u ? userToBuddy(u) : null));
+    } else {
+      setBuddy(null);
+    }
+  }, [match]);
 
   if (!ready) return null;
   if (!match) {
@@ -34,8 +49,24 @@ function MatchStatus() {
       </AppShell>
     );
   }
-  const buddy = findBuddy(match.buddyId);
-  if (!buddy) return null;
+  if (buddy === undefined) {
+    return (
+      <AppShell>
+        <div className="max-w-2xl mx-auto p-6 md:p-10">
+          <FFCard className="text-center py-12">
+            <p className="text-muted-foreground">Loading match…</p>
+          </FFCard>
+        </div>
+      </AppShell>
+    );
+  }
+  if (!buddy) {
+    return (
+      <AppShell>
+        <Empty />
+      </AppShell>
+    );
+  }
 
   const cfg = {
     pending: { icon: "hourglass_top", color: "text-accent bg-accent/20", title: "Request sent", body: `${buddy.name.split(" ")[0]} has been notified. We'll let you know the moment they respond.` },
