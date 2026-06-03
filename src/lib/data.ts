@@ -194,8 +194,44 @@ export const BUDDIES: Buddy[] = [
   },
 ];
 
+// Convert a signed-up User account into a Buddy-shaped record so it can be
+// searched, scored, and rendered alongside the seeded sample buddies.
+export function userToBuddy(u: User): Buddy {
+  return {
+    id: `acct:${(u.email || u.id).toLowerCase()}`,
+    name: u.name || u.email || "Member",
+    avatar: u.avatar || `https://i.pravatar.cc/200?u=${encodeURIComponent(u.email || u.id)}`,
+    campus: u.campus || "",
+    program: u.program || "",
+    languages: u.languages || [],
+    helpTags: [...(u.expertise || []), ...(u.supportNeeds || [])],
+    interests: u.interests || [],
+    mentoringStyle: [...(u.mentoringStyle || []), ...(u.buddyStyle || [])],
+    availability: u.availability || [],
+    bio: u.bio || "",
+  };
+}
+
+// Returns every account stored locally (signed-up users) as Buddy records,
+// excluding the currently signed-in user.
+export function getAccountBuddies(currentUserId?: string): Buddy[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("ff_accounts");
+    if (!raw) return [];
+    const accounts = JSON.parse(raw) as Record<string, User>;
+    return Object.values(accounts)
+      .filter((u) => u && u.id && u.id !== currentUserId)
+      .map(userToBuddy);
+  } catch {
+    return [];
+  }
+}
+
 export function findBuddy(id: string) {
-  return BUDDIES.find((b) => b.id === id);
+  const seeded = BUDDIES.find((b) => b.id === id);
+  if (seeded) return seeded;
+  return getAccountBuddies().find((b) => b.id === id);
 }
 
 export function scoreMatch(user: User, buddy: Buddy) {
