@@ -3,7 +3,6 @@ import { PublicNav } from "@/components/ff/PublicNav";
 import { FFButton } from "@/components/ff/FFButton";
 import { FFCard } from "@/components/ff/FFCard";
 import { Icon } from "@/components/ff/Icon";
-import studentsHero from "@/assets/students-hero.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -53,7 +52,7 @@ function Landing() {
             <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
             <div className="glass-card relative rounded-3xl shadow-2xl p-4 rotate-3 hover:rotate-0 transition-transform duration-500">
               <img
-                src={studentsHero.url}
+                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80"
                 alt="IÉSEG students"
                 className="w-full h-[420px] object-cover rounded-2xl"
               />
