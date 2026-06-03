@@ -41,9 +41,11 @@ function Matches() {
     const u = getUser();
     if (!u) return [];
     const q = query.trim().toLowerCase();
-    // Combine seeded sample buddies with real signed-up accounts on this device.
-    // De-dupe by id in case an account collides with a seeded buddy.
-    const pool = [...BUDDIES, ...getAccountBuddies(u.id)];
+    // Combine seeded sample buddies with real signed-up accounts from Lovable Cloud.
+    const accountBuddies: Buddy[] = cloudProfiles
+      .filter((p) => p.id !== u.id)
+      .map(userToBuddy);
+    const pool: Buddy[] = [...BUDDIES, ...accountBuddies];
     const seen = new Set<string>();
     const unique = pool.filter((b) => (seen.has(b.id) ? false : (seen.add(b.id), true)));
     return unique.filter((b) => {
@@ -59,7 +61,7 @@ function Matches() {
     })
       .map((b) => ({ buddy: b, ...scoreMatch(u, b) }))
       .sort((a, z) => z.score - a.score);
-  }, [filters, query]);
+  }, [filters, query, cloudProfiles]);
 
   if (!ready) return null;
   const u = getUser()!;
