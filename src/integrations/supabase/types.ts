@@ -94,7 +94,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          account_created_at: string | null
+          availability: string[] | null
+          avatar: string | null
+          bio: string | null
+          buddy_style: string[] | null
+          campus: string | null
+          created_at: string | null
+          expertise: string[] | null
+          id: string | null
+          interests: string[] | null
+          languages: string[] | null
+          mentoring_style: string[] | null
+          name: string | null
+          onboarded: boolean | null
+          program: string | null
+          role: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          account_created_at?: string | null
+          availability?: string[] | null
+          avatar?: string | null
+          bio?: string | null
+          buddy_style?: string[] | null
+          campus?: string | null
+          created_at?: string | null
+          expertise?: string[] | null
+          id?: string | null
+          interests?: string[] | null
+          languages?: string[] | null
+          mentoring_style?: string[] | null
+          name?: string | null
+          onboarded?: boolean | null
+          program?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          account_created_at?: string | null
+          availability?: string[] | null
+          avatar?: string | null
+          bio?: string | null
+          buddy_style?: string[] | null
+          campus?: string | null
+          created_at?: string | null
+          expertise?: string[] | null
+          id?: string | null
+          interests?: string[] | null
+          languages?: string[] | null
+          mentoring_style?: string[] | null
+          name?: string | null
+          onboarded?: boolean | null
+          program?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
