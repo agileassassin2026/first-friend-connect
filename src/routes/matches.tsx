@@ -6,7 +6,7 @@ import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Chip, Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, type ProgramLevel } from "@/lib/data";
+import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, getAccountBuddies, type ProgramLevel } from "@/lib/data";
 import { getUser } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
