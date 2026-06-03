@@ -7,7 +7,7 @@ export type User = {
   email: string;
   role: Role;
   originalRole?: Role; // role at signup — used to gate role switching
-  createdAt?: string;  // ISO timestamp of account creation
+  createdAt?: string; // ISO timestamp of account creation
   campus: string;
   program: string;
   languages: string[];
@@ -105,13 +105,14 @@ export async function logout() {
 }
 
 export type MatchStatus = "none" | "pending" | "accepted" | "declined";
-export function getMatch(): { buddyId: string; status: MatchStatus } | null {
+export type StoredMatch = { buddyId: string; status: MatchStatus; requestId?: string };
+export function getMatch(): StoredMatch | null {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(MATCH_KEY);
   return raw ? JSON.parse(raw) : null;
 }
-export function setMatch(buddyId: string, status: MatchStatus) {
-  localStorage.setItem(MATCH_KEY, JSON.stringify({ buddyId, status }));
+export function setMatch(buddyId: string, status: MatchStatus, requestId?: string) {
+  localStorage.setItem(MATCH_KEY, JSON.stringify({ buddyId, status, requestId }));
   window.dispatchEvent(new Event("ff:match"));
 }
 
@@ -124,7 +125,8 @@ export function getSwitchEligibility(u: User | null): {
   reason: "not-new-student" | "too-early" | "already-buddy" | "ok";
 } {
   if (!u) return { allowed: false, eligibleAt: null, reason: "not-new-student" };
-  if (u.role === "senior-buddy") return { allowed: false, eligibleAt: null, reason: "already-buddy" };
+  if (u.role === "senior-buddy")
+    return { allowed: false, eligibleAt: null, reason: "already-buddy" };
   if (u.originalRole && u.originalRole !== "new-student")
     return { allowed: false, eligibleAt: null, reason: "not-new-student" };
   const created = u.createdAt ? new Date(u.createdAt).getTime() : Date.now();
@@ -135,8 +137,6 @@ export function getSwitchEligibility(u: User | null): {
     reason: Date.now() >= eligibleAt.getTime() ? "ok" : "too-early",
   };
 }
-
-
 
 export type StreakState = {
   completed: string[]; // action ids
