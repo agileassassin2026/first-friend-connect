@@ -6,6 +6,8 @@ export type User = {
   name: string;
   email: string;
   role: Role;
+  originalRole?: Role; // role at signup — used to gate role switching
+  createdAt?: string;  // ISO timestamp of account creation
   campus: string;
   program: string;
   languages: string[];
