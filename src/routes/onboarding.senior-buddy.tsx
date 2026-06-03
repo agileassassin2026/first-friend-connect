@@ -34,7 +34,7 @@ function SeniorOnboarding() {
     set((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
 
   function finish() {
-    updateUser({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true, avatar: `https://i.pravatar.cc/200?u=${user.email}` });
+    updateUser({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true });
     completeStreakAction("profile");
     navigate({ to: "/profile" });
   }
@@ -115,7 +115,7 @@ function SeniorOnboarding() {
           {step === 5 && (
             <div className="space-y-5">
               <div className="flex items-center gap-4">
-                <Avatar name={user.name} src={`https://i.pravatar.cc/200?u=${user.email}`} size={72} />
+                <Avatar name={user.name} src={user.avatar} size={72} />
                 <div>
                   <h3 className="font-extrabold text-xl">{user.name}</h3>
                   <p className="text-sm text-muted-foreground">{user.program} · {user.campus} · Senior Buddy</p>
