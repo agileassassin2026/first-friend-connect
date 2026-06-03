@@ -7,7 +7,7 @@ import { Avatar } from "@/components/ff/Avatar";
 import { Tag, Chip } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
 import { FFInput, FFTextarea, FFSelect } from "@/components/ff/FFInput";
-import { getUser, updateUser } from "@/lib/auth";
+import { getUser, saveUserPatch } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 import {
   AVAILABILITY,
@@ -71,9 +71,9 @@ function ProfilePage() {
     setEditing(false);
   }
 
-  function save() {
+  async function save() {
     if (!draft) return;
-    updateUser({
+    await saveUserPatch({
       name: draft.name,
       campus: draft.campus,
       program: draft.program,
@@ -97,7 +97,7 @@ function ProfilePage() {
     reader.onload = () => {
       const dataUrl = String(reader.result);
       setAvatar(dataUrl);
-      updateUser({ avatar: dataUrl });
+      saveUserPatch({ avatar: dataUrl });
     };
     reader.readAsDataURL(file);
     e.target.value = "";
