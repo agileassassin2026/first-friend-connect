@@ -28,7 +28,12 @@ function Matches() {
     const u = getUser();
     if (!u) return [];
     const q = query.trim().toLowerCase();
-    return BUDDIES.filter((b) => {
+    // Combine seeded sample buddies with real signed-up accounts on this device.
+    // De-dupe by id in case an account collides with a seeded buddy.
+    const pool = [...BUDDIES, ...getAccountBuddies(u.id)];
+    const seen = new Set<string>();
+    const unique = pool.filter((b) => (seen.has(b.id) ? false : (seen.add(b.id), true)));
+    return unique.filter((b) => {
       if (q && !b.name.toLowerCase().includes(q)) return false;
       if (filters.campus.length && !filters.campus.includes(b.campus)) return false;
       if (filters.level.length && !filters.level.some((lv) => PROGRAMS_BY_LEVEL[lv].includes(b.program))) return false;
