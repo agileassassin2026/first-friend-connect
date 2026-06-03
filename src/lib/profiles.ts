@@ -2,55 +2,54 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Role } from "./auth";
 
-type ProfileRow = {
+// Sensitive columns (email, emotional_state, support_needs, capacity) are
+// hidden from other authenticated users via column-level grants in Postgres.
+// Selects use this safe column list so they work for both self and others.
+const PUBLIC_COLS =
+  "id,user_id,name,role,original_role,campus,program,languages,expertise,interests,buddy_style,mentoring_style,availability,bio,avatar,onboarded,account_created_at,created_at,updated_at";
+
+type PublicRow = {
   user_id: string;
-  email: string;
   name: string;
   role: string;
   original_role: string | null;
   campus: string;
   program: string;
   languages: string[];
-  support_needs: string[];
   expertise: string[];
-  emotional_state: string | null;
   interests: string[];
   buddy_style: string[];
   mentoring_style: string[];
   availability: string[];
-  capacity: number | null;
   bio: string | null;
   avatar: string | null;
   onboarded: boolean;
   account_created_at: string;
 };
 
-export function rowToUser(row: ProfileRow): User {
+export function rowToUser(row: PublicRow, opts?: { email?: string }): User {
   return {
     id: row.user_id,
     name: row.name,
-    email: row.email,
+    email: opts?.email ?? "",
     role: (row.role as Role) ?? "new-student",
     originalRole: (row.original_role as Role | null) ?? undefined,
     createdAt: row.account_created_at,
     campus: row.campus,
     program: row.program,
     languages: row.languages ?? [],
-    supportNeeds: row.support_needs ?? [],
     expertise: row.expertise ?? [],
-    emotionalState: row.emotional_state ?? undefined,
     interests: row.interests ?? [],
     buddyStyle: row.buddy_style ?? [],
     mentoringStyle: row.mentoring_style ?? [],
     availability: row.availability ?? [],
-    capacity: row.capacity ?? undefined,
     bio: row.bio ?? undefined,
     avatar: row.avatar ?? undefined,
     onboarded: row.onboarded,
   };
 }
 
-function userToRow(u: User): Omit<ProfileRow, "account_created_at"> & { account_created_at?: string } {
+function userToRow(u: User) {
   return {
     user_id: u.id,
     email: u.email,
@@ -86,21 +85,25 @@ export async function upsertProfile(u: User): Promise<void> {
 export async function fetchProfile(userId: string): Promise<User | null> {
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select(PUBLIC_COLS)
     .eq("user_id", userId)
     .maybeSingle();
   if (error) {
     console.error("fetchProfile failed:", error.message);
     return null;
   }
-  return data ? rowToUser(data as ProfileRow) : null;
+  if (!data) return null;
+  // Email is sensitive and not selectable from the DB; pull it from auth.
+  const { data: authData } = await supabase.auth.getUser();
+  const email = authData.user?.id === userId ? authData.user?.email ?? "" : "";
+  return rowToUser(data as unknown as PublicRow, { email });
 }
 
 export async function fetchAllProfiles(): Promise<User[]> {
-  const { data, error } = await supabase.from("profiles").select("*");
+  const { data, error } = await supabase.from("profiles").select(PUBLIC_COLS);
   if (error) {
     console.error("fetchAllProfiles failed:", error.message);
     return [];
   }
-  return (data ?? []).map((r) => rowToUser(r as ProfileRow));
+  return (data ?? []).map((r) => rowToUser(r as unknown as PublicRow));
 }
