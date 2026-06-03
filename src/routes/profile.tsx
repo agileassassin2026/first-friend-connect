@@ -64,7 +64,24 @@ function ProfilePage() {
         <FFCard className="p-0 overflow-hidden">
           <div className="px-6 md:px-8 pt-6 pb-8">
             <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <Avatar name={u.name} src={u.avatar} size={96} />
+              <div className="relative">
+                <Avatar name={u.name} src={avatar || u.avatar} size={96} />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  aria-label="Change photo"
+                  className="absolute -bottom-1 -right-1 bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center shadow-card hover:opacity-90"
+                >
+                  <Icon name="photo_camera" className="text-base" />
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  className="hidden"
+                  onChange={onPickPhoto}
+                />
+              </div>
               <div className="flex-1">
                 {editing ? (
                   <FFInput value={name} onChange={(e) => setName(e.target.value)} />
