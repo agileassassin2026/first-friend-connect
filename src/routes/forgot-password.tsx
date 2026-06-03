@@ -59,9 +59,11 @@ function ForgotPassword() {
               <FFButton type="submit" full>Send reset link</FFButton>
             </form>
           )}
-          <div className="text-sm text-center text-muted-foreground">
-            <Link to="/login" className="text-primary font-bold">Back to login</Link>
-          </div>
+          {!sent && (
+            <div className="text-sm text-center text-muted-foreground">
+              <Link to="/login" className="text-primary font-bold">Back to login</Link>
+            </div>
+          )}
         </FFCard>
       </div>
     </div>
