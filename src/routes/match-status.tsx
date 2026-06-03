@@ -8,7 +8,8 @@ import { Icon } from "@/components/ff/Icon";
 import { Tag } from "@/components/ff/Chip";
 import { findBuddy, userToBuddy, type Buddy } from "@/lib/data";
 import { fetchProfile } from "@/lib/profiles";
-import { getMatch, setMatch } from "@/lib/auth";
+import { fetchLatestMatchRequest, fetchMatchRequest, updateMatchRequestStatus } from "@/lib/matchRequests";
+import { getMatch, getUser, setMatch, type MatchStatus, type StoredMatch } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/match-status")({
@@ -29,17 +30,64 @@ function MatchStatus() {
   }, []);
 
   useEffect(() => {
+    if (!ready || match) return;
+    const currentUserId = getUser()?.id;
+    if (!currentUserId) return;
+    fetchLatestMatchRequest(currentUserId).then((request) => {
+      if (!request) return;
+      const targetProfileId = request.requester_id === currentUserId ? request.target_id : request.requester_id;
+      const next: StoredMatch = { buddyId: `acct:${targetProfileId}`, status: request.status, requestId: request.id };
+      console.log("[match] restored cloud request", { currentUserId, targetProfileId, requestId: request.id, status: request.status });
+      setMatch(next.buddyId, next.status, next.requestId);
+      setLocal(next);
+    });
+  }, [ready, match]);
+
+  useEffect(() => {
     if (!match) { setBuddy(null); return; }
+    const currentUserId = getUser()?.id;
     const seeded = findBuddy(match.buddyId);
     if (seeded) { setBuddy(seeded); return; }
+    if (match.requestId && currentUserId) {
+      setBuddy(undefined);
+      fetchMatchRequest(match.requestId).then((request) => {
+        if (!request) { setBuddy(null); return; }
+        const targetProfileId = request.requester_id === currentUserId ? request.target_id : request.requester_id;
+        const buddyId = `acct:${targetProfileId}`;
+        console.log("[match] cloud request loaded", { currentUserId, targetProfileId, requestId: request.id, status: request.status });
+        if (buddyId !== match.buddyId || request.status !== match.status) {
+          setMatch(buddyId, request.status, request.id);
+          setLocal({ buddyId, status: request.status, requestId: request.id });
+        }
+        fetchProfile(targetProfileId).then((u) => {
+          console.log("[match] profile fetch result", { targetProfileId, found: Boolean(u) });
+          setBuddy(u ? userToBuddy(u) : null);
+        });
+      });
+      return;
+    }
     if (match.buddyId.startsWith("acct:")) {
       const userId = match.buddyId.slice("acct:".length);
       setBuddy(undefined);
-      fetchProfile(userId).then((u) => setBuddy(u ? userToBuddy(u) : null));
+      fetchProfile(userId).then((u) => {
+        console.log("[match] profile fetch result", { targetProfileId: userId, found: Boolean(u) });
+        setBuddy(u ? userToBuddy(u) : null);
+      });
     } else {
       setBuddy(null);
     }
   }, [match]);
+
+  async function setStatus(status: Exclude<MatchStatus, "none">) {
+    if (!buddy || !match) return;
+    if (match.requestId) {
+      const request = await updateMatchRequestStatus(match.requestId, status);
+      console.log("[match] status changed", { requestId: match.requestId, status: request?.status ?? status });
+      setMatch(buddy.id, request?.status ?? status, match.requestId);
+    } else {
+      setMatch(buddy.id, status);
+    }
+  }
 
   if (!ready) return null;
   if (!match) {
@@ -97,8 +145,8 @@ function MatchStatus() {
 
           {match.status === "pending" && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <FFButton variant="outline" onClick={() => setMatch(buddy.id, "accepted")}><Icon name="check" /> Simulate accepted</FFButton>
-              <FFButton variant="ghost" onClick={() => setMatch(buddy.id, "declined")}>Simulate declined</FFButton>
+              <FFButton variant="outline" onClick={() => setStatus("accepted")}><Icon name="check" /> Simulate accepted</FFButton>
+              <FFButton variant="ghost" onClick={() => setStatus("declined")}>Simulate declined</FFButton>
             </div>
           )}
           {match.status === "accepted" && (
