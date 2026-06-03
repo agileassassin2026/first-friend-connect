@@ -26,6 +26,23 @@ export type User = {
 const USER_KEY = "ff_user";
 const STREAK_KEY = "ff_streak";
 const MATCH_KEY = "ff_match";
+const ACCOUNTS_KEY = "ff_accounts";
+
+type Accounts = Record<string, User>;
+
+function readAccounts(): Accounts {
+  if (typeof window === "undefined") return {};
+  const raw = localStorage.getItem(ACCOUNTS_KEY);
+  return raw ? JSON.parse(raw) : {};
+}
+function writeAccounts(a: Accounts) {
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a));
+}
+export function findAccountByEmail(email: string): User | null {
+  if (typeof window === "undefined" || !email) return null;
+  const accounts = readAccounts();
+  return accounts[email.toLowerCase()] ?? null;
+}
 
 export function getUser(): User | null {
   if (typeof window === "undefined") return null;
@@ -35,8 +52,16 @@ export function getUser(): User | null {
 
 export function setUser(u: User | null) {
   if (typeof window === "undefined") return;
-  if (u) localStorage.setItem(USER_KEY, JSON.stringify(u));
-  else localStorage.removeItem(USER_KEY);
+  if (u) {
+    localStorage.setItem(USER_KEY, JSON.stringify(u));
+    if (u.email) {
+      const accounts = readAccounts();
+      accounts[u.email.toLowerCase()] = u;
+      writeAccounts(accounts);
+    }
+  } else {
+    localStorage.removeItem(USER_KEY);
+  }
   window.dispatchEvent(new Event("ff:user"));
 }
 
