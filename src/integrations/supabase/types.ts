@@ -97,7 +97,48 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_profile: {
+        Args: { _user_id: string }
+        Returns: {
+          account_created_at: string
+          availability: string[]
+          avatar: string
+          bio: string
+          buddy_style: string[]
+          campus: string
+          expertise: string[]
+          interests: string[]
+          languages: string[]
+          mentoring_style: string[]
+          name: string
+          onboarded: boolean
+          original_role: string
+          program: string
+          role: string
+          user_id: string
+        }[]
+      }
+      list_public_profiles: {
+        Args: never
+        Returns: {
+          account_created_at: string
+          availability: string[]
+          avatar: string
+          bio: string
+          buddy_style: string[]
+          campus: string
+          expertise: string[]
+          interests: string[]
+          languages: string[]
+          mentoring_style: string[]
+          name: string
+          onboarded: boolean
+          original_role: string
+          program: string
+          role: string
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
