@@ -83,7 +83,7 @@ function Login() {
               <Link to="/forgot-password" className="text-sm text-primary font-bold">Forgot password?</Link>
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <FFButton type="submit" full>Login</FFButton>
+            <FFButton type="submit" full disabled={submitting}>{submitting ? "Signing in…" : "Login"}</FFButton>
           </form>
           <div className="text-sm text-center text-muted-foreground space-y-1">
             <p>New here? <Link to="/signup/new-student" className="text-primary font-bold">Sign up as a student</Link></p>
