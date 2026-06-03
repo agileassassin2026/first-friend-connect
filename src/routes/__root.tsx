@@ -80,8 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "IÉSEG First Friend" },
       { name: "twitter:description", content: "Find your trusted senior buddy during your first month at IÉSEG." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1779540619047-f312622d-af31-4e9b-87a5-2e4a3b348b27.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1779540619047-f312622d-af31-4e9b-87a5-2e4a3b348b27.webp" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1780490591217-hình_student_vui_vẻ_ahihi.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wDcc9HsbZEeqalcc5aRqRbA0RhF3/social-images/social-1780490591217-hình_student_vui_vẻ_ahihi.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
