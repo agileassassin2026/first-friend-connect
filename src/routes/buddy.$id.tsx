@@ -8,6 +8,7 @@ import { Icon } from "@/components/ff/Icon";
 import { Avatar } from "@/components/ff/Avatar";
 import { findBuddy, scoreMatch, userToBuddy, type Buddy } from "@/lib/data";
 import { fetchProfile } from "@/lib/profiles";
+import { createMatchRequest } from "@/lib/matchRequests";
 import { getUser, setMatch, completeStreakAction } from "@/lib/auth";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -51,8 +52,17 @@ function BuddyDetail() {
   const user = getUser()!;
   const { score, reasons, sharedInterests } = scoreMatch(user, buddy);
 
-  function request() {
-    setMatch(buddy!.id, "pending");
+  async function request() {
+    const requester = getUser()!;
+    const targetProfileId = buddy!.id.startsWith("acct:") ? buddy!.id.slice("acct:".length) : null;
+    console.log("[match] request clicked", { currentUserId: requester.id, targetProfileId, buddyId: buddy!.id });
+    if (targetProfileId) {
+      const matchRequest = await createMatchRequest(requester.id, targetProfileId);
+      console.log("[match] request result", { requestId: matchRequest?.id, status: matchRequest?.status });
+      setMatch(buddy!.id, (matchRequest?.status ?? "pending"), matchRequest?.id);
+    } else {
+      setMatch(buddy!.id, "pending");
+    }
     completeStreakAction("request");
     navigate({ to: "/match-status" });
   }
