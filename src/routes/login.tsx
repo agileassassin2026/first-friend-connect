@@ -65,6 +65,9 @@ function Login() {
           <form onSubmit={submit} className="space-y-4">
             <FFInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@ieseg.fr" required />
             <FFInput label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+            <div className="text-right -mt-2">
+              <Link to="/forgot-password" className="text-sm text-primary font-bold">Forgot password?</Link>
+            </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <FFButton type="submit" full>Login</FFButton>
           </form>
