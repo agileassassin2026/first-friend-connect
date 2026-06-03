@@ -14,7 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          account_created_at: string
+          availability: string[]
+          avatar: string | null
+          bio: string | null
+          buddy_style: string[]
+          campus: string
+          capacity: number | null
+          created_at: string
+          email: string
+          emotional_state: string | null
+          expertise: string[]
+          id: string
+          interests: string[]
+          languages: string[]
+          mentoring_style: string[]
+          name: string
+          onboarded: boolean
+          original_role: string | null
+          program: string
+          role: string
+          support_needs: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_created_at?: string
+          availability?: string[]
+          avatar?: string | null
+          bio?: string | null
+          buddy_style?: string[]
+          campus?: string
+          capacity?: number | null
+          created_at?: string
+          email: string
+          emotional_state?: string | null
+          expertise?: string[]
+          id?: string
+          interests?: string[]
+          languages?: string[]
+          mentoring_style?: string[]
+          name?: string
+          onboarded?: boolean
+          original_role?: string | null
+          program?: string
+          role?: string
+          support_needs?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_created_at?: string
+          availability?: string[]
+          avatar?: string | null
+          bio?: string | null
+          buddy_style?: string[]
+          campus?: string
+          capacity?: number | null
+          created_at?: string
+          email?: string
+          emotional_state?: string | null
+          expertise?: string[]
+          id?: string
+          interests?: string[]
+          languages?: string[]
+          mentoring_style?: string[]
+          name?: string
+          onboarded?: boolean
+          original_role?: string | null
+          program?: string
+          role?: string
+          support_needs?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

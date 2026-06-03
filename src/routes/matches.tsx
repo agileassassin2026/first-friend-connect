@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/ff/AppShell";
 import { FFCard } from "@/components/ff/FFCard";
 import { FFButton } from "@/components/ff/FFButton";
 import { Avatar } from "@/components/ff/Avatar";
 import { Chip, Tag } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, getAccountBuddies, type ProgramLevel } from "@/lib/data";
-import { getUser } from "@/lib/auth";
+import { BUDDIES, CAMPUSES, INTERESTS, LANGUAGES, PROGRAM_LEVELS, PROGRAMS_BY_LEVEL, SUPPORT_NEEDS, AVAILABILITY, scoreMatch, userToBuddy, type Buddy, type ProgramLevel } from "@/lib/data";
+import { getUser, type User } from "@/lib/auth";
+import { fetchAllProfiles } from "@/lib/profiles";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export const Route = createFileRoute("/matches")({
@@ -23,14 +24,28 @@ function Matches() {
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [cloudProfiles, setCloudProfiles] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (!ready) return;
+    let cancelled = false;
+    fetchAllProfiles().then((rows) => {
+      if (!cancelled) setCloudProfiles(rows);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ready]);
 
   const scored = useMemo(() => {
     const u = getUser();
     if (!u) return [];
     const q = query.trim().toLowerCase();
-    // Combine seeded sample buddies with real signed-up accounts on this device.
-    // De-dupe by id in case an account collides with a seeded buddy.
-    const pool = [...BUDDIES, ...getAccountBuddies(u.id)];
+    // Combine seeded sample buddies with real signed-up accounts from Lovable Cloud.
+    const accountBuddies: Buddy[] = cloudProfiles
+      .filter((p) => p.id !== u.id)
+      .map(userToBuddy);
+    const pool: Buddy[] = [...BUDDIES, ...accountBuddies];
     const seen = new Set<string>();
     const unique = pool.filter((b) => (seen.has(b.id) ? false : (seen.add(b.id), true)));
     return unique.filter((b) => {
@@ -46,7 +61,7 @@ function Matches() {
     })
       .map((b) => ({ buddy: b, ...scoreMatch(u, b) }))
       .sort((a, z) => z.score - a.score);
-  }, [filters, query]);
+  }, [filters, query, cloudProfiles]);
 
   if (!ready) return null;
   const u = getUser()!;

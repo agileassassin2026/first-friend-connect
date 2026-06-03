@@ -61,6 +61,8 @@ export function setUser(u: User | null) {
       accounts[u.email.toLowerCase()] = u;
       writeAccounts(accounts);
     }
+    // Mirror to Lovable Cloud so other devices can find this profile.
+    import("./profiles").then(({ upsertProfile }) => upsertProfile(u)).catch(() => {});
   } else {
     localStorage.removeItem(USER_KEY);
   }
