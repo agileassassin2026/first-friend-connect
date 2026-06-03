@@ -5,7 +5,7 @@ import { FFCard } from "@/components/ff/FFCard";
 import { FFInput, FFSelect } from "@/components/ff/FFInput";
 import { Chip } from "@/components/ff/Chip";
 import { Icon } from "@/components/ff/Icon";
-import { setUser, type Role } from "@/lib/auth";
+import { saveUser, type Role } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { CAMPUSES, LANGUAGES, PROGRAMS } from "@/lib/data";
 
@@ -33,14 +33,17 @@ export function SignUpForm({ role }: { role: Role }) {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/profile` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/profile`,
+        data: { name, role, originalRole: role, campus, program, languages, capacity: role === "senior-buddy" ? capacity : null },
+      },
     });
     if (signUpError || !data.user) {
       setSubmitting(false);
       setError(signUpError?.message ?? "Could not create account. Try again.");
       return;
     }
-    setUser({
+    const user = {
       id: data.user.id,
       name,
       email,
@@ -51,7 +54,8 @@ export function SignUpForm({ role }: { role: Role }) {
       program,
       languages,
       capacity: role === "senior-buddy" ? capacity : undefined,
-    });
+    };
+    await saveUser(user);
     navigate({ to: role === "senior-buddy" ? "/onboarding/senior-buddy" : "/onboarding/new-student" });
   }
 

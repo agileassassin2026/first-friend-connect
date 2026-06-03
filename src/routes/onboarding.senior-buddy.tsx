@@ -6,7 +6,7 @@ import { Chip } from "@/components/ff/Chip";
 import { Avatar } from "@/components/ff/Avatar";
 import { Icon } from "@/components/ff/Icon";
 import { FFTextarea } from "@/components/ff/FFInput";
-import { getUser, updateUser, completeStreakAction } from "@/lib/auth";
+import { getUser, saveUserPatch, completeStreakAction } from "@/lib/auth";
 import { AVAILABILITY, BUDDY_STYLES, HELP_OPTIONS, INTERESTS } from "@/lib/data";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
@@ -33,8 +33,8 @@ function SeniorOnboarding() {
   const toggle = (set: React.Dispatch<React.SetStateAction<string[]>>, v: string) =>
     set((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
 
-  function finish() {
-    updateUser({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true });
+  async function finish() {
+    await saveUserPatch({ expertise, mentoringStyle, interests, availability, capacity, bio, onboarded: true });
     completeStreakAction("profile");
     navigate({ to: "/profile" });
   }
