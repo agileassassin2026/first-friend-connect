@@ -24,6 +24,18 @@ function Matches() {
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [cloudProfiles, setCloudProfiles] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (!ready) return;
+    let cancelled = false;
+    fetchAllProfiles().then((rows) => {
+      if (!cancelled) setCloudProfiles(rows);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ready]);
 
   const scored = useMemo(() => {
     const u = getUser();
